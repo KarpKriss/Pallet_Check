@@ -2860,6 +2860,27 @@
         height: 64px !important;
       }
     }
+
+    /* Narrow and center Pallet ID / Container ID columns */
+    body.pallet-view-active table th:nth-child(4),
+    body.pallet-view-active table td:nth-child(4),
+    body.pallet-view-active table th:nth-child(5),
+    body.pallet-view-active table td:nth-child(5) {
+      width: 12% !important;
+      text-align: center !important;
+    }
+
+    body.pallet-view-active table th:nth-child(4),
+    body.pallet-view-active table th:nth-child(5) {
+      text-align: center !important;
+    }
+
+    body.pallet-view-active table td:nth-child(4),
+    body.pallet-view-active table td:nth-child(5) {
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
   </style>
 </head>
 <body>
