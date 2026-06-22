@@ -1115,6 +1115,28 @@
         border-left: 0;
       }
     }
+
+    /* Drawer click reliability fix */
+    .side-tab-panel {
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .side-tab-panel.drawer-open,
+    .side-tab-panel .tabs,
+    .side-tab-panel .tab-btn,
+    .side-tab-panel .tab-panel {
+      pointer-events: auto;
+    }
+
+    .side-tab-panel .tabs {
+      z-index: 1002;
+    }
+
+    .side-tab-panel .tab-btn {
+      position: relative;
+      z-index: 1003;
+    }
   </style>
 </head>
 <body>
@@ -1421,7 +1443,6 @@
     };
     const BUILTIN_EAN_MAP = window.EAN_SKU_MAP || {};
 
-    const sideTabPanel = document.querySelector(".side-tab-panel");
     const sideTabPanel = document.querySelector(".side-tab-panel");
     const importTabBtn = document.getElementById("importTabBtn");
     const settingsTabBtn = document.getElementById("settingsTabBtn");
