@@ -746,6 +746,58 @@
       color: #2d4258;
     }
 
+    .workflow-next-pallet {
+      margin: 20px auto 0;
+      max-width: 560px;
+      display: grid;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .workflow-next-pallet.hidden {
+      display: none !important;
+    }
+
+    .workflow-check-note {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #fff7e6;
+      border: 1px solid #eed59f;
+      color: #6c4211;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .workflow-next-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .workflow-next-row input {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 0 14px;
+      font: inherit;
+      font-weight: 650;
+      color: var(--ink);
+      background: #ffffff;
+      outline: none;
+    }
+
+    .workflow-next-row input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(11, 92, 171, 0.13);
+    }
+
+    .workflow-manual-option {
+      justify-content: flex-start;
+      color: #44576b;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -1407,6 +1459,14 @@
         <div id="workflowModalKicker" class="workflow-modal-kicker">Workflow Message</div>
         <h2 id="workflowModalTitle" class="workflow-modal-title">Ready</h2>
         <p id="workflowModalMessage" class="workflow-modal-message"></p>
+        <div id="workflowNextPalletPanel" class="workflow-next-pallet hidden">
+          <div class="workflow-check-note">Before moving on, make sure there is no other SKU left on the pallet than the SKU you scanned.</div>
+          <div class="workflow-next-row">
+            <input id="workflowNextPalletInput" type="text" placeholder="Scan next pallet ID" autocomplete="off">
+            <button id="workflowNextPalletSubmitBtn" class="btn-primary hidden" type="button">Enter</button>
+          </div>
+          <label class="inline-option workflow-manual-option"><input id="workflowManualPalletToggle" type="checkbox"> Enable manual entry mode</label>
+        </div>
       </div>
     </div>
 
@@ -1767,6 +1827,10 @@
     const workflowModalKicker = document.getElementById("workflowModalKicker");
     const workflowModalTitle = document.getElementById("workflowModalTitle");
     const workflowModalMessage = document.getElementById("workflowModalMessage");
+    const workflowNextPalletPanel = document.getElementById("workflowNextPalletPanel");
+    const workflowNextPalletInput = document.getElementById("workflowNextPalletInput");
+    const workflowNextPalletSubmitBtn = document.getElementById("workflowNextPalletSubmitBtn");
+    const workflowManualPalletToggle = document.getElementById("workflowManualPalletToggle");
 
     let palletMatchesBox = null;
     let scanPanel = null;
@@ -2293,6 +2357,9 @@
     }
 
     function getActiveInput() {
+      if (workflowModal.classList.contains("active") && workflowNextPalletPanel && !workflowNextPalletPanel.classList.contains("hidden")) {
+        return workflowNextPalletInput;
+      }
       if (workflowModal.classList.contains("active") || pendingPalletConfirmation || scanState.status === "completed") {
         return palletSearchInput;
       }
@@ -2331,17 +2398,40 @@
       if (!ctx) {
         return;
       }
-      const oscillator = ctx.createOscillator();
-      const gain = ctx.createGain();
-      oscillator.connect(gain);
-      gain.connect(ctx.destination);
-      oscillator.type = "sine";
-      oscillator.frequency.value = type === "success" ? 880 : 240;
-      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.13);
-      oscillator.start();
-      oscillator.stop(ctx.currentTime + 0.14);
+
+      const patterns = {
+        success: [
+          { frequency: 860, duration: 0.22, wave: "sine" },
+          { frequency: 1180, duration: 0.28, wave: "sine" }
+        ],
+        error: [
+          { frequency: 280, duration: 0.22, wave: "square" },
+          { frequency: 205, duration: 0.24, wave: "square" },
+          { frequency: 150, duration: 0.22, wave: "square" }
+        ],
+        complete: [
+          { frequency: 660, duration: 0.22, wave: "triangle" },
+          { frequency: 880, duration: 0.22, wave: "triangle" },
+          { frequency: 1320, duration: 0.30, wave: "triangle" }
+        ]
+      };
+
+      let cursor = ctx.currentTime;
+      const sequence = patterns[type] || patterns.error;
+      sequence.forEach((step) => {
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.type = step.wave;
+        oscillator.frequency.setValueAtTime(step.frequency, cursor);
+        gain.gain.setValueAtTime(0.0001, cursor);
+        gain.gain.exponentialRampToValueAtTime(type === "error" ? 0.18 : 0.16, cursor + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.0001, cursor + step.duration);
+        oscillator.start(cursor);
+        oscillator.stop(cursor + step.duration + 0.02);
+        cursor += step.duration + 0.035;
+      });
     }
 
     function resetScanState() {
@@ -2353,16 +2443,35 @@
       scanState.status = "not-started";
     }
 
+    function updateWorkflowManualPalletModeUi() {
+      workflowManualPalletToggle.checked = Boolean(state.manualPalletEntry);
+      workflowNextPalletSubmitBtn.classList.toggle("hidden", !state.manualPalletEntry);
+    }
+
     function showWorkflowModal(type, title, message, kicker) {
+      const isCompletionModal = type === "success" && title === "Pallet completed correctly";
       workflowModalCard.className = "workflow-modal-card " + type;
       workflowModalKicker.textContent = kicker || "Workflow Message";
       workflowModalTitle.textContent = title;
       workflowModalMessage.textContent = message;
+      workflowNextPalletPanel.classList.toggle("hidden", !isCompletionModal);
+      if (isCompletionModal) {
+        workflowNextPalletInput.value = "";
+        updateWorkflowManualPalletModeUi();
+      }
       workflowModal.classList.add("active");
+      if (isCompletionModal) {
+        setTimeout(() => {
+          workflowNextPalletInput.focus();
+          workflowNextPalletInput.select();
+        }, 60);
+      }
     }
 
     function hideWorkflowModal() {
       workflowModal.classList.remove("active");
+      workflowNextPalletPanel.classList.add("hidden");
+      workflowNextPalletInput.value = "";
     }
 
     function sumRequirementCounts() {
@@ -2533,6 +2642,17 @@
       }).join("");
     }
 
+    function searchPalletFromWorkflowModal() {
+      const nextPalletId = normalize(workflowNextPalletInput.value);
+      if (!nextPalletId) {
+        workflowNextPalletInput.focus();
+        return;
+      }
+      palletSearchInput.value = nextPalletId;
+      workflowNextPalletInput.value = "";
+      searchPallet();
+    }
+
     function updateDuplicateWarning(rows) {
       const containerSet = new Set(rows.map((row) => row.containerId).filter(Boolean));
       const skuSet = new Set(rows.map((row) => row.sku).filter(Boolean));
@@ -2692,7 +2812,7 @@
           : "Accepted scan: " + resolvedSku + ".",
         scanState.status === "completed" ? "success" : "info"
       );
-      beep("success");
+      beep(scanState.status === "completed" ? "complete" : "success");
       skuScanInput.value = "";
       setStatus(
         scanState.status === "completed"
@@ -3144,7 +3264,7 @@
         advancedTools.classList.toggle("open");
       });
       document.addEventListener("pointerdown", (event) => {
-        if (workflowModal.classList.contains("active")) {
+        if (workflowModal.classList.contains("active") && !workflowModalCard.contains(event.target)) {
           hideWorkflowModal();
         }
 
@@ -3177,6 +3297,38 @@
       manualPalletSubmitBtn.addEventListener("click", () => {
         clearTimeout(palletAutoSubmitTimer);
         searchPallet();
+      });
+      workflowManualPalletToggle.addEventListener("change", () => {
+        state.manualPalletEntry = workflowManualPalletToggle.checked;
+        clearTimeout(palletAutoSubmitTimer);
+        saveState();
+        updateManualPalletModeUi();
+        updateWorkflowManualPalletModeUi();
+        workflowNextPalletInput.focus();
+      });
+      workflowNextPalletSubmitBtn.addEventListener("click", () => {
+        clearTimeout(palletAutoSubmitTimer);
+        searchPalletFromWorkflowModal();
+      });
+      workflowNextPalletInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          clearTimeout(palletAutoSubmitTimer);
+          if (!state.manualPalletEntry) {
+            searchPalletFromWorkflowModal();
+          }
+        }
+      });
+      workflowNextPalletInput.addEventListener("input", () => {
+        if (state.manualPalletEntry) {
+          return;
+        }
+        clearTimeout(palletAutoSubmitTimer);
+        palletAutoSubmitTimer = setTimeout(() => {
+          if (normalize(workflowNextPalletInput.value)) {
+            searchPalletFromWorkflowModal();
+          }
+        }, 140);
       });
       palletSearchInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
