@@ -2813,8 +2813,8 @@
 
       const current = scanState.scannedCounts.get(resolvedSku) || 0;
       if (current >= required) {
-        ensureScannerAcknowledgement("This item is already fully scanned: " + resolvedSku, "warn");
-        beep("error");
+        ensureScannerAcknowledgement("This item is already fully scanned, but it belongs to this pallet: " + resolvedSku, "warn");
+        beep("success");
         skuScanInput.select();
         queueFocusActiveInput();
         return;
