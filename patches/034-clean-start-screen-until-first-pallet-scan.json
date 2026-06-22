@@ -1,0 +1,41 @@
+{
+  "commit_message": "Clean start screen until first pallet scan",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "            <h2>Pallet Lookup</h2>\n            <p>After loading the data, scan a pallet ID or type it manually.</p>",
+      "new": "            <h2>Scan the first pallet to begin</h2>\n            <p>Scan a pallet ID to load its contents and start the checking process.</p>"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Clean initial pallet lookup screen */\n    .grid > main.panel .section-head {\n      text-align: center;\n    }\n\n    .grid > main.panel .search-row {\n      justify-content: center;\n    }\n\n    .grid > main.panel .search-row .scan-entry-row {\n      width: min(30%, 460px);\n      min-width: 320px;\n      justify-content: center;\n    }\n\n    .grid > main.panel #palletSearchInput {\n      text-align: center;\n    }\n\n    .grid > main.panel > .inline-option:first-of-type {\n      justify-content: center;\n      margin-top: 10px;\n    }\n\n    body:not(.pallet-view-active) .results-head,\n    body:not(.pallet-view-active) .table-wrap,\n    body:not(.pallet-view-active) .meta-grid,\n    body:not(.pallet-view-active) .stacked-panels,\n    body:not(.pallet-view-active) #duplicateWarning,\n    body:not(.pallet-view-active) #revisitNotice,\n    body:not(.pallet-view-active) #scanPanel {\n      display: none !important;\n    }\n\n    @media (max-width: 1180px) {\n      .grid > main.panel .search-row .scan-entry-row {\n        width: min(44%, 520px);\n      }\n    }\n\n    @media (max-width: 760px) {\n      .grid > main.panel .search-row .scan-entry-row {\n        width: 100%;\n        min-width: 0;\n      }\n    }\n"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function resetResults() {",
+      "insert": "    function setPalletViewActive(isActive) {\n      document.body.classList.toggle(\"pallet-view-active\", Boolean(isActive));\n    }\n\n"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function renderResults(rows, palletId, options = {}) {",
+      "insert": "\n      setPalletViewActive(true);"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function searchSku() {",
+      "insert": "\n      setPalletViewActive(true);"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function resetResults() {",
+      "insert": "\n      setPalletViewActive(false);"
+    }
+  ]
+}
