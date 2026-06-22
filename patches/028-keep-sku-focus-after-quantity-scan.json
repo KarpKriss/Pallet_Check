@@ -1,0 +1,29 @@
+{
+  "commit_message": "Keep SKU focus after quantity scans",
+  "operations": [
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function queueFocusActiveInput() {\n      clearTimeout(focusTimer);\n      focusTimer = setTimeout(() => {\n        const target = getActiveInput();\n        if (target && !target.disabled) {\n          target.focus();\n          target.select?.();\n        }\n      }, 40);\n    }",
+      "insert": "\n\n    function queueFocusSkuInput() {\n      clearTimeout(focusTimer);\n      focusTimer = setTimeout(() => {\n        if (skuScanInput && !skuScanInput.disabled) {\n          skuScanInput.focus();\n          skuScanInput.select?.();\n        }\n      }, 40);\n    }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        skuScanInput.select();\n        queueFocusActiveInput();\n        return;\n      }\n\n      const current = scanState.scannedCounts.get(resolvedSku) || 0;",
+      "new": "        skuScanInput.select();\n        queueFocusSkuInput();\n        return;\n      }\n\n      const current = scanState.scannedCounts.get(resolvedSku) || 0;"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        skuScanInput.select();\n        queueFocusActiveInput();\n        return;\n      }\n\n      scanState.scannedCounts.set(resolvedSku, current + 1);",
+      "new": "        skuScanInput.select();\n        queueFocusSkuInput();\n        return;\n      }\n\n      scanState.scannedCounts.set(resolvedSku, current + 1);"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      setStatus(\n        scanState.status === \"completed\"\n          ? \"Pallet \" + scanState.activePalletId + \" has been completed.\"\n          : \"Scan accepted for pallet \" + scanState.activePalletId + \".\",\n        scanState.status === \"completed\" ? \"success\" : \"info\"\n      );\n      queueFocusActiveInput();",
+      "new": "      setStatus(\n        scanState.status === \"completed\"\n          ? \"Pallet \" + scanState.activePalletId + \" has been completed.\"\n          : \"Scan accepted for pallet \" + scanState.activePalletId + \".\",\n        scanState.status === \"completed\" ? \"success\" : \"info\"\n      );\n      if (scanState.status === \"completed\") {\n        queueFocusActiveInput();\n      } else {\n        queueFocusSkuInput();\n      }"
+    }
+  ]
+}
