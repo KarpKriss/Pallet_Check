@@ -1,0 +1,17 @@
+{
+  "commit_message": "Fix drawer tab shape and page dim",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Final drawer visual polish */\n    body.drawer-active::before {\n      content: \"\";\n      position: fixed;\n      inset: 0;\n      background: rgba(8, 20, 34, 0.34);\n      z-index: 900;\n      pointer-events: none;\n    }\n\n    .side-tab-panel.drawer-open + main.panel {\n      filter: none;\n    }\n\n    .side-tab-panel .tab-btn {\n      border-radius: 16px 0 0 16px;\n      border-right: 0;\n      border-left: 1px solid rgba(255, 255, 255, 0.14);\n    }\n\n    .side-tab-panel .tab-btn.active {\n      border-right: 0;\n    }\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      sideTabPanel.classList.toggle(\"drawer-open\", drawerOpen);\n      importTabBtn.classList.toggle(\"active\", showImport);",
+      "new": "      sideTabPanel.classList.toggle(\"drawer-open\", drawerOpen);\n      document.body.classList.toggle(\"drawer-active\", drawerOpen);\n      importTabBtn.classList.toggle(\"active\", showImport);"
+    }
+  ]
+}
