@@ -1,0 +1,35 @@
+{
+  "commit_message": "Move session restore note to page bottom",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    #statusBox.hidden {\n      display: none !important;\n    }\n\n    .session-restore-note {\n      width: min(85%, 1380px);\n      margin: 14px auto 26px;\n      text-align: center;\n      font-size: 12.5px;\n      line-height: 1.4;\n      color: #94a3b8;\n      font-weight: 520;\n    }\n\n    .session-restore-note.hidden {\n      display: none !important;\n    }\n"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  <script>",
+      "insert": "  <div id=\"sessionRestoreNotice\" class=\"session-restore-note hidden\"></div>\n\n"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    const statusBox = document.getElementById(\"statusBox\");",
+      "insert": "\n    const sessionRestoreNotice = document.getElementById(\"sessionRestoreNotice\");"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      if (state.rows.length > 0) {\n        setStatus(\"Saved data from the previous session has been loaded.\", \"info\");\n      }",
+      "new": "      if (state.rows.length > 0) {\n        statusBox.classList.add(\"hidden\");\n        sessionRestoreNotice.textContent = \"Saved data from the previous session has been loaded.\";\n        sessionRestoreNotice.classList.remove(\"hidden\");\n      }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function setStatus(message, tone) {\n      statusBox.textContent = message;\n      statusBox.className = \"status \" + tone;\n    }",
+      "new": "    function setStatus(message, tone) {\n      statusBox.textContent = message;\n      statusBox.className = \"status \" + tone;\n      sessionRestoreNotice.classList.add(\"hidden\");\n    }"
+    }
+  ]
+}
