@@ -990,6 +990,131 @@
         transform: rotate(180deg) translateX(-8px);
       }
     }
+
+    /* Full-height contrast drawer polish */
+    .grid > main.panel {
+      position: relative;
+      transition: filter 0.3s ease, opacity 0.3s ease;
+    }
+
+    .side-tab-panel {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      height: 100vh;
+      max-height: none;
+      width: 400px;
+      max-width: min(400px, calc(100vw - 48px));
+      padding: 28px 22px 22px;
+      border: 0;
+      border-radius: 0 24px 24px 0;
+      background: linear-gradient(180deg, #0f2138 0%, #102b48 54%, #0a182a 100%);
+      color: #f8fbff;
+      overflow-y: auto;
+      overflow-x: visible;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .side-tab-panel.drawer-open {
+      transform: translateX(0);
+      box-shadow: 22px 0 60px rgba(8, 20, 34, 0.32);
+    }
+
+    .side-tab-panel.drawer-open + main.panel {
+      filter: brightness(0.78) saturate(0.86);
+    }
+
+    .side-tab-panel:not(.drawer-open) {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .side-tab-panel .tabs {
+      top: 28px;
+      right: -44px;
+      gap: 8px;
+    }
+
+    .side-tab-panel .tab-btn {
+      min-width: 44px;
+      min-height: 118px;
+      padding: 14px 9px;
+      border-radius: 0 16px 16px 0;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-left: 0;
+      background: rgba(15, 33, 56, 0.92);
+      color: #dbeafe;
+      box-shadow: 8px 10px 24px rgba(8, 20, 34, 0.18);
+      transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .side-tab-panel .tab-btn.active {
+      background: #ffffff;
+      color: #0b5cab;
+      box-shadow: 10px 12px 28px rgba(8, 20, 34, 0.24);
+    }
+
+    .side-tab-panel .tab-btn:not(.active):hover {
+      background: #173b63;
+      color: #ffffff;
+    }
+
+    .side-tab-panel h2 {
+      color: #ffffff;
+    }
+
+    .side-tab-panel p,
+    .side-tab-panel .footnote {
+      color: #c9d8e8;
+    }
+
+    .side-tab-panel label {
+      color: #9fb7d2;
+    }
+
+    .side-tab-panel .field-card,
+    .side-tab-panel .badge {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #f8fbff;
+    }
+
+    .side-tab-panel input[type="text"],
+    .side-tab-panel textarea {
+      background: rgba(255, 255, 255, 0.96);
+      color: #102033;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .side-tab-panel .status.info {
+      background: rgba(219, 234, 254, 0.14);
+      color: #dbeafe;
+      border: 1px solid rgba(219, 234, 254, 0.14);
+    }
+
+    @media (max-width: 900px) {
+      .side-tab-panel {
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        width: min(390px, calc(100vw - 48px));
+        max-width: min(390px, calc(100vw - 48px));
+        padding: 24px 18px 20px;
+      }
+
+      .side-tab-panel .tabs {
+        top: 24px;
+        right: -44px;
+      }
+
+      .side-tab-panel .tab-btn {
+        border-radius: 0 16px 16px 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.14);
+        border-left: 0;
+      }
+    }
   </style>
 </head>
 <body>
