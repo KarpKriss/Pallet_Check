@@ -1,0 +1,11 @@
+{
+  "commit_message": "Make settings fields vertical and plain",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Settings tab plain vertical fields */\n    #settingsTab .settings-grid {\n      display: flex !important;\n      flex-direction: column !important;\n      gap: 16px !important;\n    }\n\n    #settingsTab .field-card {\n      padding: 0 !important;\n      border: 0 !important;\n      border-radius: 0 !important;\n      background: transparent !important;\n      box-shadow: none !important;\n    }\n\n    #settingsTab .field-card:focus-within {\n      border-color: transparent !important;\n      background: transparent !important;\n      box-shadow: none !important;\n    }\n\n    #settingsTab .field-card label {\n      display: block !important;\n      margin: 0 0 7px !important;\n      font-size: 11px !important;\n      letter-spacing: 0.075em !important;\n      color: #a9bbcf !important;\n    }\n\n    #settingsTab .field-card input[type=\"text\"] {\n      width: 80% !important;\n      max-width: 280px !important;\n      height: 44px !important;\n      border-radius: 14px !important;\n    }\n\n    @media (max-width: 560px) {\n      #settingsTab .field-card input[type=\"text\"] {\n        width: 100% !important;\n        max-width: none !important;\n      }\n    }\n"
+    }
+  ]
+}
