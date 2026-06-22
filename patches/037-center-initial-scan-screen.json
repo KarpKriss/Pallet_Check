@@ -1,0 +1,11 @@
+{
+  "commit_message": "Center initial scan screen vertically",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Vertically centered initial scan screen */\n    body:not(.pallet-view-active) .shell {\n      min-height: calc(100vh - 32px);\n      display: flex;\n      flex-direction: column;\n    }\n\n    body:not(.pallet-view-active) .hero {\n      padding-top: 26px;\n      padding-bottom: 0;\n      flex: 0 0 auto;\n    }\n\n    body:not(.pallet-view-active) .grid {\n      flex: 1 1 auto;\n      margin-top: 0 !important;\n      align-items: center;\n    }\n\n    body:not(.pallet-view-active) .grid > main.panel {\n      transform: translateY(-2vh);\n    }\n\n    body:not(.pallet-view-active) .start-instruction {\n      margin: 0 0 28px !important;\n      font-size: 18px !important;\n      line-height: 1.45 !important;\n      font-weight: 720 !important;\n      color: #3f5166 !important;\n    }\n\n    @media (max-height: 760px) {\n      body:not(.pallet-view-active) .grid > main.panel {\n        transform: translateY(0);\n      }\n\n      body:not(.pallet-view-active) .start-instruction {\n        margin-bottom: 20px !important;\n      }\n    }\n"
+    }
+  ]
+}
