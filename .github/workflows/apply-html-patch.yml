@@ -1,0 +1,89 @@
+name: Apply HTML patch
+
+on:
+  push:
+    paths:
+      - 'patches/**/*.json'
+      - '.github/workflows/apply-html-patch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply latest JSON patch
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          patch_dir = pathlib.Path('patches')
+          patch_files = sorted(patch_dir.glob('*.json')) if patch_dir.exists() else []
+          if not patch_files:
+              print('No patch files found. Nothing to do.')
+              sys.exit(0)
+
+          patch_file = patch_files[-1]
+          print(f'Using patch: {patch_file}')
+          data = json.loads(patch_file.read_text(encoding='utf-8'))
+
+          for index, op in enumerate(data.get('operations', []), start=1):
+              op_type = op['type']
+              target = pathlib.Path(op['path'])
+              text = target.read_text(encoding='utf-8')
+
+              if op_type == 'replace':
+                  old = op['old']
+                  new = op['new']
+                  count = op.get('count', 1)
+                  matches = text.count(old)
+                  if matches < count:
+                      raise SystemExit(f'Patch operation {index} failed: expected at least {count} match(es), found {matches} in {target}')
+                  text = text.replace(old, new, count)
+
+              elif op_type == 'insert_after':
+                  anchor = op['anchor']
+                  insert = op['insert']
+                  count = op.get('count', 1)
+                  matches = text.count(anchor)
+                  if matches < count:
+                      raise SystemExit(f'Patch operation {index} failed: expected at least {count} anchor match(es), found {matches} in {target}')
+                  text = text.replace(anchor, anchor + insert, count)
+
+              elif op_type == 'insert_before':
+                  anchor = op['anchor']
+                  insert = op['insert']
+                  count = op.get('count', 1)
+                  matches = text.count(anchor)
+                  if matches < count:
+                      raise SystemExit(f'Patch operation {index} failed: expected at least {count} anchor match(es), found {matches} in {target}')
+                  text = text.replace(anchor, insert + anchor, count)
+
+              else:
+                  raise SystemExit(f'Unsupported patch operation type: {op_type}')
+
+              target.write_text(text, encoding='utf-8')
+
+          pathlib.Path('patch_message.txt').write_text(data.get('commit_message', 'Apply HTML patch'), encoding='utf-8')
+          PY
+
+      - name: Commit patched files
+        run: |
+          if git diff --quiet; then
+            echo "No file changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Pallet_Check_Tool.html
+          git commit -m "$(cat patch_message.txt)"
+          git push
