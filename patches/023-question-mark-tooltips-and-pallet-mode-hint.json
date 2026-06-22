@@ -1,0 +1,23 @@
+{
+  "commit_message": "Use question mark tooltips for manual modes",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "<span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when you want to type a SKU/EAN manually instead of auto-submitting every scanner input. In manual mode, confirm the value with Enter or the button.\">i</span>",
+      "new": "<span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when you want to type a SKU/EAN manually instead of auto-submitting every scanner input. In manual mode, confirm the value with Enter or the button.\">?</span>"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "<span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when the next pallet ID should be typed manually. In manual mode, confirm the pallet with Enter or the button instead of auto-submit.\">i</span>",
+      "new": "<span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when the next pallet ID should be typed manually. In manual mode, confirm the pallet with Enter or the button instead of auto-submit.\">?</span>"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "          <label class=\"inline-option\"><input id=\"manualPalletToggle\" type=\"checkbox\"> Enable manual pallet entry mode</label>",
+      "new": "          <label class=\"inline-option\"><input id=\"manualPalletToggle\" type=\"checkbox\"> Enable manual pallet entry mode <span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when you want to type or edit the pallet ID manually. In manual mode, confirm the pallet with Enter instead of auto-submit after scanning.\">?</span></label>"
+    }
+  ]
+}
