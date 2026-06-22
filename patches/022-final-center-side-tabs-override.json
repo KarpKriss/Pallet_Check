@@ -1,0 +1,11 @@
+{
+  "commit_message": "Final override for centered side tabs",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Final side tabs position override */\n    .side-tab-panel .tabs {\n      top: 50% !important;\n      right: -54px !important;\n      height: auto !important;\n      max-height: calc(100vh - 120px) !important;\n      transform: translateY(-50%) !important;\n      justify-content: center !important;\n      gap: 14px !important;\n      overflow: visible !important;\n    }\n\n    .side-tab-panel .tab-btn {\n      min-width: 54px !important;\n      min-height: 128px !important;\n      padding: 16px 11px !important;\n      border-radius: 18px 0 0 18px !important;\n      font-size: 13px !important;\n    }\n\n    @media (max-width: 900px) {\n      .side-tab-panel .tabs {\n        top: 50% !important;\n        right: -52px !important;\n        height: auto !important;\n        max-height: calc(100vh - 120px) !important;\n        transform: translateY(-50%) !important;\n        justify-content: center !important;\n        gap: 12px !important;\n      }\n\n      .side-tab-panel .tab-btn {\n        min-width: 52px !important;\n        min-height: 120px !important;\n        padding: 15px 10px !important;\n      }\n    }\n"
+    }
+  ]
+}
