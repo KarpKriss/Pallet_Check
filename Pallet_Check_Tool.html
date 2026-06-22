@@ -1137,6 +1137,34 @@
       position: relative;
       z-index: 1003;
     }
+
+    /* Keep drawer tabs visible outside the panel */
+    .side-tab-panel {
+      overflow: visible;
+      box-sizing: border-box;
+    }
+
+    .side-tab-panel .tab-panel {
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+    }
+
+    .side-tab-panel .tabs {
+      position: absolute;
+      top: 28px;
+      right: -44px;
+      left: auto;
+      display: flex;
+      flex-direction: column;
+      z-index: 1004;
+      pointer-events: auto;
+    }
+
+    .side-tab-panel .tab-btn {
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
