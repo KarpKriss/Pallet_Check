@@ -2820,6 +2820,46 @@
       color: #8a98a8;
       font-weight: 800;
     }
+
+    /* Compact sticky side stats */
+    body.pallet-view-active .meta-grid {
+      align-self: start !important;
+      align-content: start !important;
+      height: auto !important;
+      min-height: 0 !important;
+      position: sticky !important;
+      top: 18px !important;
+      grid-auto-rows: min-content !important;
+    }
+
+    body.pallet-view-active .meta-card {
+      min-height: 0 !important;
+      height: 68px !important;
+      padding: 11px 14px !important;
+      flex: 0 0 auto !important;
+      justify-content: center !important;
+    }
+
+    body.pallet-view-active .meta-card .label {
+      font-size: 10.5px !important;
+      line-height: 1.1 !important;
+    }
+
+    body.pallet-view-active .meta-card .value {
+      margin-top: 6px !important;
+      font-size: 17px !important;
+      line-height: 1.15 !important;
+    }
+
+    @media (max-width: 1050px) {
+      body.pallet-view-active .meta-grid {
+        position: static !important;
+      }
+
+      body.pallet-view-active .meta-card {
+        height: 64px !important;
+      }
+    }
   </style>
 </head>
 <body>
