@@ -2620,6 +2620,26 @@
         transform: translateY(0);
       }
     }
+
+    /* Remove active side-tab overlap into drawer content */
+    .side-tab-panel .tab-btn::before,
+    .side-tab-panel .tab-btn.active::before,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn::before,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active::before {
+      display: none !important;
+      opacity: 0 !important;
+    }
+
+    .side-tab-panel .tab-btn,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn {
+      margin-left: 0 !important;
+    }
+
+    .side-tab-panel .tab-btn.active,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active {
+      border-left: 0 !important;
+      box-shadow: 8px 10px 24px rgba(8, 20, 34, 0.18) !important;
+    }
   </style>
 </head>
 <body>
