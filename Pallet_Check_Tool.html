@@ -174,6 +174,10 @@
       transform: rotate(180deg) translateX(-8px);
     }
 
+    .tab-btn:not(.active):hover {
+      transform: rotate(180deg);
+    }
+
     .tab-panel {
       display: none;
     }
@@ -866,6 +870,11 @@
         background: transparent;
         box-shadow: none;
         writing-mode: horizontal-tb;
+        transform: none;
+      }
+
+      .tab-btn:hover,
+      .tab-btn:not(.active):hover {
         transform: none;
       }
 
