@@ -2212,6 +2212,15 @@
     #scanPanel .scan-entry-row {
       flex: 0 1 420px;
     }
+
+    /* Hide redundant pallet result heading text */
+    .results-head > div:first-child {
+      display: none !important;
+    }
+
+    .results-head {
+      justify-content: flex-end !important;
+    }
   </style>
 </head>
 <body>
@@ -3693,6 +3702,8 @@
 
       pendingPalletConfirmation = "";
       hideWorkflowModal();
+      revisitNotice.textContent = "";
+      revisitNotice.classList.remove("active");
       setStatus("Re-check started for completed pallet " + palletId + ". Scan SKU/EAN codes again.", "info");
       startScanWorkflow(rows, palletId);
       queueFocusActiveInput();
