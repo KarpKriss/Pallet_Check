@@ -1,0 +1,11 @@
+{
+  "commit_message": "Hide pallet search action buttons",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    table {",
+      "insert": "    #searchBtn,\n    #resetSearchBtn {\n      display: none !important;\n    }\n\n"
+    }
+  ]
+}
