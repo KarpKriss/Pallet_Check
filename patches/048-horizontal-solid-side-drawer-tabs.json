@@ -1,0 +1,11 @@
+{
+  "commit_message": "Make side drawer tabs horizontal and solid",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Horizontal solid side drawer tabs */\n    .side-tab-panel .tabs,\n    body:not(.pallet-view-active) .side-tab-panel .tabs {\n      right: -158px !important;\n      gap: 12px !important;\n      align-items: flex-start !important;\n      overflow: visible !important;\n    }\n\n    .side-tab-panel .tab-btn,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn {\n      min-width: 158px !important;\n      min-height: 52px !important;\n      height: 52px !important;\n      padding: 0 18px !important;\n      border-radius: 0 18px 18px 0 !important;\n      border: 1px solid #183b61 !important;\n      border-left: 0 !important;\n      background: #102b48 !important;\n      color: #f8fbff !important;\n      writing-mode: horizontal-tb !important;\n      text-orientation: mixed !important;\n      transform: none !important;\n      text-align: left !important;\n      justify-content: flex-start !important;\n      letter-spacing: 0.02em !important;\n      box-shadow: 8px 10px 24px rgba(8, 20, 34, 0.18) !important;\n      opacity: 1 !important;\n    }\n\n    .side-tab-panel .tab-btn.active,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active {\n      background: #ffffff !important;\n      color: #0b5cab !important;\n      border-color: #ffffff !important;\n      transform: none !important;\n      box-shadow: 10px 12px 28px rgba(8, 20, 34, 0.22) !important;\n    }\n\n    .side-tab-panel .tab-btn:not(.active):hover,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn:not(.active):hover {\n      background: #173b63 !important;\n      color: #ffffff !important;\n      transform: none !important;\n    }\n\n    .side-tab-panel .tab-btn::before,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn::before {\n      left: -8px !important;\n      width: 9px !important;\n      background: #102b48 !important;\n    }\n\n    .side-tab-panel .tab-btn.active::before,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active::before {\n      background: #ffffff !important;\n      opacity: 1 !important;\n    }\n"
+    }
+  ]
+}
