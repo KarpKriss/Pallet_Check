@@ -1,0 +1,71 @@
+{
+  "commit_message": "Enhance completion modal and scan sounds",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    table {",
+      "insert": "    .workflow-next-pallet {\n      margin: 20px auto 0;\n      max-width: 560px;\n      display: grid;\n      gap: 12px;\n      text-align: left;\n    }\n\n    .workflow-next-pallet.hidden {\n      display: none !important;\n    }\n\n    .workflow-check-note {\n      padding: 12px 14px;\n      border-radius: 16px;\n      background: #fff7e6;\n      border: 1px solid #eed59f;\n      color: #6c4211;\n      font-size: 14px;\n      line-height: 1.45;\n      font-weight: 650;\n    }\n\n    .workflow-next-row {\n      display: flex;\n      gap: 10px;\n      align-items: center;\n    }\n\n    .workflow-next-row input {\n      width: 100%;\n      min-height: 48px;\n      border-radius: 16px;\n      border: 1px solid var(--line);\n      padding: 0 14px;\n      font: inherit;\n      font-weight: 650;\n      color: var(--ink);\n      background: #ffffff;\n      outline: none;\n    }\n\n    .workflow-next-row input:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 4px rgba(11, 92, 171, 0.13);\n    }\n\n    .workflow-manual-option {\n      justify-content: flex-start;\n      color: #44576b;\n    }\n\n"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "        <p id=\"workflowModalMessage\" class=\"workflow-modal-message\"></p>",
+      "insert": "\n        <div id=\"workflowNextPalletPanel\" class=\"workflow-next-pallet hidden\">\n          <div class=\"workflow-check-note\">Before moving on, make sure there is no other SKU left on the pallet than the SKU you scanned.</div>\n          <div class=\"workflow-next-row\">\n            <input id=\"workflowNextPalletInput\" type=\"text\" placeholder=\"Scan next pallet ID\" autocomplete=\"off\">\n            <button id=\"workflowNextPalletSubmitBtn\" class=\"btn-primary hidden\" type=\"button\">Enter</button>\n          </div>\n          <label class=\"inline-option workflow-manual-option\"><input id=\"workflowManualPalletToggle\" type=\"checkbox\"> Enable manual entry mode</label>\n        </div>"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    const workflowModalMessage = document.getElementById(\"workflowModalMessage\");",
+      "insert": "\n    const workflowNextPalletPanel = document.getElementById(\"workflowNextPalletPanel\");\n    const workflowNextPalletInput = document.getElementById(\"workflowNextPalletInput\");\n    const workflowNextPalletSubmitBtn = document.getElementById(\"workflowNextPalletSubmitBtn\");\n    const workflowManualPalletToggle = document.getElementById(\"workflowManualPalletToggle\");"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      if (workflowModal.classList.contains(\"active\") || pendingPalletConfirmation || scanState.status === \"completed\") {\n        return palletSearchInput;\n      }",
+      "new": "      if (workflowModal.classList.contains(\"active\") && workflowNextPalletPanel && !workflowNextPalletPanel.classList.contains(\"hidden\")) {\n        return workflowNextPalletInput;\n      }\n      if (workflowModal.classList.contains(\"active\") || pendingPalletConfirmation || scanState.status === \"completed\") {\n        return palletSearchInput;\n      }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function beep(type) {\n      if (!state.soundEnabled) {\n        return;\n      }\n      const ctx = initAudio();\n      if (!ctx) {\n        return;\n      }\n      const oscillator = ctx.createOscillator();\n      const gain = ctx.createGain();\n      oscillator.connect(gain);\n      gain.connect(ctx.destination);\n      oscillator.type = \"sine\";\n      oscillator.frequency.value = type === \"success\" ? 880 : 240;\n      gain.gain.setValueAtTime(0.0001, ctx.currentTime);\n      gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);\n      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.13);\n      oscillator.start();\n      oscillator.stop(ctx.currentTime + 0.14);\n    }",
+      "new": "    function beep(type) {\n      if (!state.soundEnabled) {\n        return;\n      }\n      const ctx = initAudio();\n      if (!ctx) {\n        return;\n      }\n\n      const patterns = {\n        success: [\n          { frequency: 860, duration: 0.22, wave: \"sine\" },\n          { frequency: 1180, duration: 0.28, wave: \"sine\" }\n        ],\n        error: [\n          { frequency: 280, duration: 0.22, wave: \"square\" },\n          { frequency: 205, duration: 0.24, wave: \"square\" },\n          { frequency: 150, duration: 0.22, wave: \"square\" }\n        ],\n        complete: [\n          { frequency: 660, duration: 0.22, wave: \"triangle\" },\n          { frequency: 880, duration: 0.22, wave: \"triangle\" },\n          { frequency: 1320, duration: 0.30, wave: \"triangle\" }\n        ]\n      };\n\n      let cursor = ctx.currentTime;\n      const sequence = patterns[type] || patterns.error;\n      sequence.forEach((step) => {\n        const oscillator = ctx.createOscillator();\n        const gain = ctx.createGain();\n        oscillator.connect(gain);\n        gain.connect(ctx.destination);\n        oscillator.type = step.wave;\n        oscillator.frequency.setValueAtTime(step.frequency, cursor);\n        gain.gain.setValueAtTime(0.0001, cursor);\n        gain.gain.exponentialRampToValueAtTime(type === \"error\" ? 0.18 : 0.16, cursor + 0.025);\n        gain.gain.exponentialRampToValueAtTime(0.0001, cursor + step.duration);\n        oscillator.start(cursor);\n        oscillator.stop(cursor + step.duration + 0.02);\n        cursor += step.duration + 0.035;\n      });\n    }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function showWorkflowModal(type, title, message, kicker) {\n      workflowModalCard.className = \"workflow-modal-card \" + type;\n      workflowModalKicker.textContent = kicker || \"Workflow Message\";\n      workflowModalTitle.textContent = title;\n      workflowModalMessage.textContent = message;\n      workflowModal.classList.add(\"active\");\n    }\n\n    function hideWorkflowModal() {\n      workflowModal.classList.remove(\"active\");\n    }",
+      "new": "    function updateWorkflowManualPalletModeUi() {\n      workflowManualPalletToggle.checked = Boolean(state.manualPalletEntry);\n      workflowNextPalletSubmitBtn.classList.toggle(\"hidden\", !state.manualPalletEntry);\n    }\n\n    function showWorkflowModal(type, title, message, kicker) {\n      const isCompletionModal = type === \"success\" && title === \"Pallet completed correctly\";\n      workflowModalCard.className = \"workflow-modal-card \" + type;\n      workflowModalKicker.textContent = kicker || \"Workflow Message\";\n      workflowModalTitle.textContent = title;\n      workflowModalMessage.textContent = message;\n      workflowNextPalletPanel.classList.toggle(\"hidden\", !isCompletionModal);\n      if (isCompletionModal) {\n        workflowNextPalletInput.value = \"\";\n        updateWorkflowManualPalletModeUi();\n      }\n      workflowModal.classList.add(\"active\");\n      if (isCompletionModal) {\n        setTimeout(() => {\n          workflowNextPalletInput.focus();\n          workflowNextPalletInput.select();\n        }, 60);\n      }\n    }\n\n    function hideWorkflowModal() {\n      workflowModal.classList.remove(\"active\");\n      workflowNextPalletPanel.classList.add(\"hidden\");\n      workflowNextPalletInput.value = \"\";\n    }"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function updateDuplicateWarning(rows) {",
+      "insert": "    function searchPalletFromWorkflowModal() {\n      const nextPalletId = normalize(workflowNextPalletInput.value);\n      if (!nextPalletId) {\n        workflowNextPalletInput.focus();\n        return;\n      }\n      palletSearchInput.value = nextPalletId;\n      workflowNextPalletInput.value = \"\";\n      searchPallet();\n    }\n\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        showWorkflowModal(\n          \"success\",\n          \"Pallet completed correctly\",\n          \"You have completed this pallet successfully. Scan the next pallet to start the next process.\",\n          \"Current pallet finished\"\n        );",
+      "new": "        showWorkflowModal(\n          \"success\",\n          \"Pallet completed correctly\",\n          \"You have completed this pallet successfully. Scan the next pallet to start the next process.\",\n          \"Current pallet finished\"\n        );"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      beep(\"success\");",
+      "new": "      beep(scanState.status === \"completed\" ? \"complete\" : \"success\");"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        if (workflowModal.classList.contains(\"active\")) {\n          hideWorkflowModal();\n        }",
+      "new": "        if (workflowModal.classList.contains(\"active\") && !workflowModalCard.contains(event.target)) {\n          hideWorkflowModal();\n        }"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "      manualPalletSubmitBtn.addEventListener(\"click\", () => {\n        clearTimeout(palletAutoSubmitTimer);\n        searchPallet();\n      });",
+      "insert": "\n      workflowManualPalletToggle.addEventListener(\"change\", () => {\n        state.manualPalletEntry = workflowManualPalletToggle.checked;\n        clearTimeout(palletAutoSubmitTimer);\n        saveState();\n        updateManualPalletModeUi();\n        updateWorkflowManualPalletModeUi();\n        workflowNextPalletInput.focus();\n      });\n      workflowNextPalletSubmitBtn.addEventListener(\"click\", () => {\n        clearTimeout(palletAutoSubmitTimer);\n        searchPalletFromWorkflowModal();\n      });\n      workflowNextPalletInput.addEventListener(\"keydown\", (event) => {\n        if (event.key === \"Enter\") {\n          event.preventDefault();\n          clearTimeout(palletAutoSubmitTimer);\n          if (!state.manualPalletEntry) {\n            searchPalletFromWorkflowModal();\n          }\n        }\n      });\n      workflowNextPalletInput.addEventListener(\"input\", () => {\n        if (state.manualPalletEntry) {\n          return;\n        }\n        clearTimeout(palletAutoSubmitTimer);\n        palletAutoSubmitTimer = setTimeout(() => {\n          if (normalize(workflowNextPalletInput.value)) {\n            searchPalletFromWorkflowModal();\n          }\n        }, 140);\n      });"
+    }
+  ]
+}
