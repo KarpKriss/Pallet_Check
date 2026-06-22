@@ -2525,6 +2525,65 @@
         background-size: 100% 100%;
       }
     }
+
+    /* Horizontal solid side drawer tabs */
+    .side-tab-panel .tabs,
+    body:not(.pallet-view-active) .side-tab-panel .tabs {
+      right: -158px !important;
+      gap: 12px !important;
+      align-items: flex-start !important;
+      overflow: visible !important;
+    }
+
+    .side-tab-panel .tab-btn,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn {
+      min-width: 158px !important;
+      min-height: 52px !important;
+      height: 52px !important;
+      padding: 0 18px !important;
+      border-radius: 0 18px 18px 0 !important;
+      border: 1px solid #183b61 !important;
+      border-left: 0 !important;
+      background: #102b48 !important;
+      color: #f8fbff !important;
+      writing-mode: horizontal-tb !important;
+      text-orientation: mixed !important;
+      transform: none !important;
+      text-align: left !important;
+      justify-content: flex-start !important;
+      letter-spacing: 0.02em !important;
+      box-shadow: 8px 10px 24px rgba(8, 20, 34, 0.18) !important;
+      opacity: 1 !important;
+    }
+
+    .side-tab-panel .tab-btn.active,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active {
+      background: #ffffff !important;
+      color: #0b5cab !important;
+      border-color: #ffffff !important;
+      transform: none !important;
+      box-shadow: 10px 12px 28px rgba(8, 20, 34, 0.22) !important;
+    }
+
+    .side-tab-panel .tab-btn:not(.active):hover,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn:not(.active):hover {
+      background: #173b63 !important;
+      color: #ffffff !important;
+      transform: none !important;
+    }
+
+    .side-tab-panel .tab-btn::before,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn::before {
+      left: -8px !important;
+      width: 9px !important;
+      background: #102b48 !important;
+    }
+
+    .side-tab-panel .tab-btn.active::before,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active::before {
+      background: #ffffff !important;
+      opacity: 1 !important;
+    }
   </style>
 </head>
 <body>
