@@ -798,6 +798,25 @@
       color: #44576b;
     }
 
+    .recheck-pallet-btn {
+      margin-left: 12px;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(11, 92, 171, 0.22);
+      background: #ffffff;
+      color: #0b5cab;
+      font-size: 13px;
+      font-weight: 760;
+      box-shadow: none;
+      vertical-align: middle;
+    }
+
+    .recheck-pallet-btn:hover {
+      transform: none;
+      background: #eaf3fc;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -2531,12 +2550,14 @@
       }
 
       if (activity.completedRuns > 0) {
-        revisitNotice.textContent =
+        revisitNotice.innerHTML =
           "This pallet was already completed before. Last completed: " +
-          (activity.lastCompletedAt || activity.lastScannedAt) +
+          escapeHtml(activity.lastCompletedAt || activity.lastScannedAt) +
           ". Completed runs: " +
-          activity.completedRuns +
-          ".";
+          escapeHtml(activity.completedRuns) +
+          ". <button class=\"recheck-pallet-btn\" type=\"button\" data-pallet-id=\"" +
+          escapeHtml(palletId) +
+          "\">Check Again</button>";
       } else {
         revisitNotice.textContent =
           "This pallet has already been scanned before. Last activity: " +
@@ -2883,6 +2904,20 @@
         updateScanStatus();
         queueFocusActiveInput();
       }
+    }
+
+    function recheckCompletedPallet(palletId) {
+      const rows = state.rows.filter((row) => row.palletId === palletId);
+      if (rows.length === 0) {
+        setStatus("This pallet is no longer available in the loaded data.", "warn");
+        return;
+      }
+
+      pendingPalletConfirmation = "";
+      hideWorkflowModal();
+      setStatus("Re-check started for completed pallet " + palletId + ". Scan SKU/EAN codes again.", "info");
+      startScanWorkflow(rows, palletId);
+      queueFocusActiveInput();
     }
 
     function renderPalletChoices(palletIds, contextLabel, onSelect) {
@@ -3262,6 +3297,13 @@
       });
       advancedToolsToggle.addEventListener("click", () => {
         advancedTools.classList.toggle("open");
+      });
+      revisitNotice.addEventListener("click", (event) => {
+        const button = event.target.closest(".recheck-pallet-btn");
+        if (!button) {
+          return;
+        }
+        recheckCompletedPallet(button.dataset.palletId);
       });
       document.addEventListener("pointerdown", (event) => {
         if (workflowModal.classList.contains("active") && !workflowModalCard.contains(event.target)) {
