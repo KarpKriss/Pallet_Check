@@ -1,0 +1,17 @@
+{
+  "commit_message": "Hide result title and clear recheck banner",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Hide redundant pallet result heading text */\n    .results-head > div:first-child {\n      display: none !important;\n    }\n\n    .results-head {\n      justify-content: flex-end !important;\n    }\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      pendingPalletConfirmation = \"\";\n      hideWorkflowModal();\n      setStatus(\"Re-check started for completed pallet \" + palletId + \". Scan SKU/EAN codes again.\", \"info\");\n      startScanWorkflow(rows, palletId);",
+      "new": "      pendingPalletConfirmation = \"\";\n      hideWorkflowModal();\n      revisitNotice.textContent = \"\";\n      revisitNotice.classList.remove(\"active\");\n      setStatus(\"Re-check started for completed pallet \" + palletId + \". Scan SKU/EAN codes again.\", \"info\");\n      startScanWorkflow(rows, palletId);"
+    }
+  ]
+}
