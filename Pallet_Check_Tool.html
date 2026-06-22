@@ -1165,6 +1165,30 @@
     .side-tab-panel .tab-btn {
       pointer-events: auto;
     }
+
+    /* Final drawer visual polish */
+    body.drawer-active::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 20, 34, 0.34);
+      z-index: 900;
+      pointer-events: none;
+    }
+
+    .side-tab-panel.drawer-open + main.panel {
+      filter: none;
+    }
+
+    .side-tab-panel .tab-btn {
+      border-radius: 16px 0 0 16px;
+      border-right: 0;
+      border-left: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .side-tab-panel .tab-btn.active {
+      border-right: 0;
+    }
   </style>
 </head>
 <body>
@@ -1778,6 +1802,7 @@
       const drawerOpen = showImport || showSettings || showInstructions;
 
       sideTabPanel.classList.toggle("drawer-open", drawerOpen);
+      document.body.classList.toggle("drawer-active", drawerOpen);
       importTabBtn.classList.toggle("active", showImport);
       settingsTabBtn.classList.toggle("active", showSettings);
       instructionsTabBtn.classList.toggle("active", showInstructions);
