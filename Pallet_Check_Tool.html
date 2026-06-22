@@ -2593,6 +2593,16 @@
       }, 40);
     }
 
+    function queueFocusSkuInput() {
+      clearTimeout(focusTimer);
+      focusTimer = setTimeout(() => {
+        if (skuScanInput && !skuScanInput.disabled) {
+          skuScanInput.focus();
+          skuScanInput.select?.();
+        }
+      }, 40);
+    }
+
     function initAudio() {
       if (!audioContext) {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -3001,7 +3011,7 @@
         addWrongScan("not on this pallet", scannedValue, "Active pallet: " + scanState.activePalletId);
         beep("error");
         skuScanInput.select();
-        queueFocusActiveInput();
+        queueFocusSkuInput();
         return;
       }
 
@@ -3010,7 +3020,7 @@
         ensureScannerAcknowledgement("This item is already fully scanned, but it belongs to this pallet: " + resolvedSku, "warn");
         beep("success");
         skuScanInput.select();
-        queueFocusActiveInput();
+        queueFocusSkuInput();
         return;
       }
 
@@ -3035,7 +3045,11 @@
           : "Scan accepted for pallet " + scanState.activePalletId + ".",
         scanState.status === "completed" ? "success" : "info"
       );
-      queueFocusActiveInput();
+      if (scanState.status === "completed") {
+        queueFocusActiveInput();
+      } else {
+        queueFocusSkuInput();
+      }
     }
 
     function renderCurrentMeta(rows, palletId, labelText) {
