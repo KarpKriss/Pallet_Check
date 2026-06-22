@@ -1,0 +1,17 @@
+{
+  "commit_message": "Fix drawer tab clicks",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    const sideTabPanel = document.querySelector(\".side-tab-panel\");\n    const sideTabPanel = document.querySelector(\".side-tab-panel\");\n    const importTabBtn = document.getElementById(\"importTabBtn\");",
+      "new": "    const sideTabPanel = document.querySelector(\".side-tab-panel\");\n    const importTabBtn = document.getElementById(\"importTabBtn\");"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Drawer click reliability fix */\n    .side-tab-panel {\n      z-index: 1000;\n      pointer-events: none;\n    }\n\n    .side-tab-panel.drawer-open,\n    .side-tab-panel .tabs,\n    .side-tab-panel .tab-btn,\n    .side-tab-panel .tab-panel {\n      pointer-events: auto;\n    }\n\n    .side-tab-panel .tabs {\n      z-index: 1002;\n    }\n\n    .side-tab-panel .tab-btn {\n      position: relative;\n      z-index: 1003;\n    }\n"
+    }
+  ]
+}
