@@ -2369,6 +2369,55 @@
     body:not(.pallet-view-active) .side-tab-panel .tab-btn {
       pointer-events: auto !important;
     }
+
+    /* Polish connection between side drawer and vertical tabs */
+    .side-tab-panel .tabs,
+    body:not(.pallet-view-active) .side-tab-panel .tabs {
+      right: -52px !important;
+      gap: 14px !important;
+      overflow: visible !important;
+    }
+
+    .side-tab-panel .tab-btn,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn {
+      min-width: 56px !important;
+      min-height: 128px !important;
+      border-radius: 0 18px 18px 0 !important;
+      border-left: 0 !important;
+      border-right: 1px solid rgba(255, 255, 255, 0.14) !important;
+      margin-left: -1px !important;
+      position: relative !important;
+      overflow: visible !important;
+    }
+
+    .side-tab-panel .tab-btn::before,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn::before {
+      content: "";
+      position: absolute;
+      left: -8px;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background: #102b48;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .side-tab-panel .tab-btn.active::before,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active::before {
+      opacity: 1;
+    }
+
+    .side-tab-panel .tab-btn.active,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active {
+      transform: rotate(180deg) translateX(-4px) !important;
+      box-shadow: 12px -2px 28px rgba(8, 20, 34, 0.18) !important;
+    }
+
+    .side-tab-panel .tab-btn:not(.active):hover,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn:not(.active):hover {
+      transform: rotate(180deg) translateX(-2px) !important;
+    }
   </style>
 </head>
 <body>
