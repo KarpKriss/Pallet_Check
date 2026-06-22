@@ -2221,6 +2221,29 @@
     .results-head {
       justify-content: flex-end !important;
     }
+
+    /* Keep utility tabs available before first pallet scan */
+    body:not(.pallet-view-active) .grid > main.panel {
+      width: min(1080px, calc(100vw - 72px)) !important;
+    }
+
+    body:not(.pallet-view-active) .stacked-panels {
+      display: grid !important;
+      width: min(980px, 100%) !important;
+      margin: 34px auto 0 !important;
+    }
+
+    body:not(.pallet-view-active) .stacked-panels .accordion-body {
+      text-align: left;
+    }
+
+    body:not(.pallet-view-active) .stacked-panels .accordion:not(.open) .accordion-body {
+      display: none !important;
+    }
+
+    body:not(.pallet-view-active) .stacked-panels .accordion.open .accordion-body {
+      display: block !important;
+    }
   </style>
 </head>
 <body>
