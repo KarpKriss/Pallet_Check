@@ -841,6 +841,71 @@
       font-weight: 820;
     }
 
+    .info-hint {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      margin-left: 6px;
+      border-radius: 999px;
+      background: #e6edf4;
+      color: #5b6b7d;
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1;
+      cursor: help;
+      flex: 0 0 auto;
+    }
+
+    .info-hint::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      width: 270px;
+      padding: 10px 12px;
+      border-radius: 13px;
+      background: #172638;
+      color: #f8fbff;
+      box-shadow: 0 16px 36px rgba(8, 20, 34, 0.22);
+      font-size: 12.5px;
+      font-weight: 620;
+      line-height: 1.38;
+      text-transform: none;
+      letter-spacing: 0;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 4px);
+      transition: opacity 0.16s ease, transform 0.16s ease;
+      z-index: 1600;
+    }
+
+    .info-hint::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 4px);
+      width: 10px;
+      height: 10px;
+      background: #172638;
+      transform: translateX(-50%) rotate(45deg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease;
+      z-index: 1599;
+    }
+
+    .info-hint:hover::after,
+    .info-hint:focus-visible::after,
+    .info-hint:hover::before,
+    .info-hint:focus-visible::before {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -1508,7 +1573,7 @@
             <input id="workflowNextPalletInput" type="text" placeholder="Scan next pallet ID" autocomplete="off">
             <button id="workflowNextPalletSubmitBtn" class="btn-primary hidden" type="button">Enter</button>
           </div>
-          <label class="inline-option workflow-manual-option"><input id="workflowManualPalletToggle" type="checkbox"> Enable manual entry mode</label>
+          <label class="inline-option workflow-manual-option"><input id="workflowManualPalletToggle" type="checkbox"> Enable manual entry mode <span class="info-hint" tabindex="0" data-tooltip="Use this when the next pallet ID should be typed manually. In manual mode, confirm the pallet with Enter or the button instead of auto-submit.">i</span></label>
         </div>
       </div>
     </div>
@@ -2301,7 +2366,7 @@
           </div>
           <button id="clearScansBtn" class="btn-secondary" type="button">Reset Scans</button>
         </div>
-        <label class="inline-option"><input id="manualScanToggle" type="checkbox"> Enable manual entry mode</label>
+        <label class="inline-option"><input id="manualScanToggle" type="checkbox"> Enable manual entry mode <span class="info-hint" tabindex="0" data-tooltip="Use this when you want to type a SKU/EAN manually instead of auto-submitting every scanner input. In manual mode, confirm the value with Enter or the button.">i</span></label>
         <div id="scanStatus" class="status info">Search for a pallet ID first.</div>
         <div class="progress-bar"><div id="scanProgressFill" class="progress-fill"></div></div>
         <div id="scanProgressText" class="results-meta">Progress: 0 / 0</div>
