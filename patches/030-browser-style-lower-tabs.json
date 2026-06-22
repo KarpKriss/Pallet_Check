@@ -1,0 +1,23 @@
+{
+  "commit_message": "Convert lower accordions to browser style tabs",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Browser-style lower tabs */\n    .stacked-panels {\n      display: grid;\n      grid-template-columns: repeat(3, minmax(0, 1fr));\n      gap: 0;\n      align-items: end;\n      margin-top: 4px;\n      border-bottom: 1px solid var(--line);\n    }\n\n    .stacked-panels > .accordion {\n      display: contents;\n      border: 0;\n      border-radius: 0;\n      background: transparent;\n      overflow: visible;\n    }\n\n    .stacked-panels .accordion-toggle {\n      min-height: 58px;\n      margin: 0 4px -1px 0;\n      padding: 12px 16px;\n      border: 1px solid var(--line);\n      border-bottom: 0;\n      border-radius: 16px 16px 0 0;\n      background: #edf3f9;\n      color: #34475c;\n      box-shadow: none;\n      position: relative;\n      z-index: 1;\n    }\n\n    .stacked-panels .accordion-toggle:hover {\n      background: #f6f9fc;\n      transform: none;\n    }\n\n    .stacked-panels .accordion.open .accordion-toggle {\n      background: #ffffff;\n      color: var(--ink);\n      border-color: var(--line);\n      box-shadow: 0 -8px 24px rgba(8, 20, 34, 0.04);\n      z-index: 3;\n    }\n\n    .stacked-panels .accordion-meta {\n      display: block;\n      margin-top: 3px;\n      font-size: 12px;\n      line-height: 1.2;\n      color: #6c7a89;\n    }\n\n    .stacked-panels .accordion-icon {\n      display: none;\n    }\n\n    .stacked-panels .accordion-body {\n      grid-column: 1 / -1;\n      grid-row: 2;\n      padding: 16px;\n      border: 1px solid var(--line);\n      border-top: 0;\n      border-radius: 0 0 18px 18px;\n      background: #ffffff;\n      box-shadow: 0 18px 42px rgba(8, 20, 34, 0.05);\n    }\n\n    .stacked-panels .accordion:not(.open) .accordion-body {\n      display: none !important;\n    }\n\n    .stacked-panels .accordion.open .accordion-body {\n      display: block !important;\n    }\n\n    @media (max-width: 760px) {\n      .stacked-panels {\n        grid-template-columns: 1fr;\n        border-bottom: 0;\n        gap: 8px;\n      }\n\n      .stacked-panels > .accordion {\n        display: block;\n        border: 1px solid var(--line);\n        border-radius: 16px;\n        background: #fbfcfe;\n        overflow: hidden;\n      }\n\n      .stacked-panels .accordion-toggle {\n        margin: 0;\n        border: 0;\n        border-radius: 0;\n      }\n\n      .stacked-panels .accordion-icon {\n        display: inline;\n      }\n\n      .stacked-panels .accordion-body {\n        border: 0;\n        border-top: 1px solid var(--line);\n        border-radius: 0;\n        box-shadow: none;\n      }\n    }\n"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function toggleExclusiveAccordion(targetSection) {",
+      "insert": "    function setupLowerBrowserTabs() {\n      const tabsHost = document.querySelector(\".stacked-panels\");\n      if (tabsHost && advancedTools && !tabsHost.contains(advancedTools)) {\n        tabsHost.appendChild(advancedTools);\n      }\n\n      [wrongScanToggle, completedHistoryToggle, advancedToolsToggle].forEach((toggle) => {\n        if (toggle) {\n          toggle.setAttribute(\"aria-expanded\", \"false\");\n        }\n      });\n    }\n\n"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function bindEvents() {",
+      "insert": "\n      setupLowerBrowserTabs();"
+    }
+  ]
+}
