@@ -2298,9 +2298,7 @@
         if (event.key === "Enter") {
           event.preventDefault();
           clearTimeout(scanAutoSubmitTimer);
-          if (!state.manualScanEntry) {
-            handleSkuScan();
-          }
+          handleSkuScan();
         }
       });
 
