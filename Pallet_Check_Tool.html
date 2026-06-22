@@ -2418,6 +2418,73 @@
     body:not(.pallet-view-active) .side-tab-panel .tab-btn:not(.active):hover {
       transform: rotate(180deg) translateX(-2px) !important;
     }
+
+    /* Stable lower utility tabs: fixed button row, shared content area below */
+    .stacked-panels {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      grid-template-rows: auto auto !important;
+      align-items: start !important;
+      justify-items: center !important;
+      column-gap: 28px !important;
+      row-gap: 18px !important;
+    }
+
+    .stacked-panels > .accordion {
+      display: contents !important;
+    }
+
+    #wrongScanToggle {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+    }
+
+    #completedHistoryToggle {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+    }
+
+    #advancedToolsToggle {
+      grid-column: 3 !important;
+      grid-row: 1 !important;
+    }
+
+    .stacked-panels .accordion-toggle {
+      align-self: start !important;
+    }
+
+    .stacked-panels .accordion-body {
+      grid-column: 1 / -1 !important;
+      grid-row: 2 !important;
+      width: min(980px, 100%) !important;
+      justify-self: center !important;
+      margin-top: 0 !important;
+    }
+
+    .stacked-panels .accordion:not(.open) .accordion-body {
+      display: none !important;
+    }
+
+    .stacked-panels .accordion.open .accordion-body {
+      display: block !important;
+    }
+
+    @media (max-width: 760px) {
+      .stacked-panels {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: none !important;
+        row-gap: 8px !important;
+      }
+
+      #wrongScanToggle,
+      #completedHistoryToggle,
+      #advancedToolsToggle,
+      .stacked-panels .accordion-body {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+        width: 100% !important;
+      }
+    }
   </style>
 </head>
 <body>
