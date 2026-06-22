@@ -1,0 +1,35 @@
+{
+  "commit_message": "Allow rechecking completed pallets",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    table {",
+      "insert": "    .recheck-pallet-btn {\n      margin-left: 12px;\n      min-height: 30px;\n      padding: 0 12px;\n      border-radius: 999px;\n      border: 1px solid rgba(11, 92, 171, 0.22);\n      background: #ffffff;\n      color: #0b5cab;\n      font-size: 13px;\n      font-weight: 760;\n      box-shadow: none;\n      vertical-align: middle;\n    }\n\n    .recheck-pallet-btn:hover {\n      transform: none;\n      background: #eaf3fc;\n    }\n\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        revisitNotice.textContent =\n          \"This pallet was already completed before. Last completed: \" +\n          (activity.lastCompletedAt || activity.lastScannedAt) +\n          \". Completed runs: \" +\n          activity.completedRuns +\n          \".\";",
+      "new": "        revisitNotice.innerHTML =\n          \"This pallet was already completed before. Last completed: \" +\n          escapeHtml(activity.lastCompletedAt || activity.lastScannedAt) +\n          \". Completed runs: \" +\n          escapeHtml(activity.completedRuns) +\n          \". <button class=\\\"recheck-pallet-btn\\\" type=\\\"button\\\" data-pallet-id=\\\"\" +\n          escapeHtml(palletId) +\n          \"\\\">Check Again</button>\";"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        revisitNotice.textContent =\n          \"This pallet has already been scanned before. Last activity: \" +\n          activity.lastScannedAt +\n          \".\";",
+      "new": "        revisitNotice.textContent =\n          \"This pallet has already been scanned before. Last activity: \" +\n          activity.lastScannedAt +\n          \".\";"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function renderPalletChoices(palletIds, contextLabel, onSelect) {",
+      "insert": "    function recheckCompletedPallet(palletId) {\n      const rows = state.rows.filter((row) => row.palletId === palletId);\n      if (rows.length === 0) {\n        setStatus(\"This pallet is no longer available in the loaded data.\", \"warn\");\n        return;\n      }\n\n      pendingPalletConfirmation = \"\";\n      hideWorkflowModal();\n      setStatus(\"Re-check started for completed pallet \" + palletId + \". Scan SKU/EAN codes again.\", \"info\");\n      startScanWorkflow(rows, palletId);\n      queueFocusActiveInput();\n    }\n\n"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "      advancedToolsToggle.addEventListener(\"click\", () => {\n        advancedTools.classList.toggle(\"open\");\n      });",
+      "insert": "\n      revisitNotice.addEventListener(\"click\", (event) => {\n        const button = event.target.closest(\".recheck-pallet-btn\");\n        if (!button) {\n          return;\n        }\n        recheckCompletedPallet(button.dataset.palletId);\n      });"
+    }
+  ]
+}
