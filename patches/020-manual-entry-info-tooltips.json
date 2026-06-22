@@ -1,0 +1,23 @@
+{
+  "commit_message": "Add info tooltips for manual entry mode",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    table {",
+      "insert": "    .info-hint {\n      position: relative;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 18px;\n      height: 18px;\n      margin-left: 6px;\n      border-radius: 999px;\n      background: #e6edf4;\n      color: #5b6b7d;\n      font-size: 12px;\n      font-weight: 850;\n      line-height: 1;\n      cursor: help;\n      flex: 0 0 auto;\n    }\n\n    .info-hint::after {\n      content: attr(data-tooltip);\n      position: absolute;\n      left: 50%;\n      bottom: calc(100% + 10px);\n      width: 270px;\n      padding: 10px 12px;\n      border-radius: 13px;\n      background: #172638;\n      color: #f8fbff;\n      box-shadow: 0 16px 36px rgba(8, 20, 34, 0.22);\n      font-size: 12.5px;\n      font-weight: 620;\n      line-height: 1.38;\n      text-transform: none;\n      letter-spacing: 0;\n      white-space: normal;\n      opacity: 0;\n      pointer-events: none;\n      transform: translate(-50%, 4px);\n      transition: opacity 0.16s ease, transform 0.16s ease;\n      z-index: 1600;\n    }\n\n    .info-hint::before {\n      content: \"\";\n      position: absolute;\n      left: 50%;\n      bottom: calc(100% + 4px);\n      width: 10px;\n      height: 10px;\n      background: #172638;\n      transform: translateX(-50%) rotate(45deg);\n      opacity: 0;\n      pointer-events: none;\n      transition: opacity 0.16s ease;\n      z-index: 1599;\n    }\n\n    .info-hint:hover::after,\n    .info-hint:focus-visible::after,\n    .info-hint:hover::before,\n    .info-hint:focus-visible::before {\n      opacity: 1;\n      transform: translate(-50%, 0);\n    }\n\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        <label class=\"inline-option\"><input id=\"manualScanToggle\" type=\"checkbox\"> Enable manual entry mode</label>",
+      "new": "        <label class=\"inline-option\"><input id=\"manualScanToggle\" type=\"checkbox\"> Enable manual entry mode <span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when you want to type a SKU/EAN manually instead of auto-submitting every scanner input. In manual mode, confirm the value with Enter or the button.\">i</span></label>"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "          <label class=\"inline-option workflow-manual-option\"><input id=\"workflowManualPalletToggle\" type=\"checkbox\"> Enable manual entry mode</label>",
+      "new": "          <label class=\"inline-option workflow-manual-option\"><input id=\"workflowManualPalletToggle\" type=\"checkbox\"> Enable manual entry mode <span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when the next pallet ID should be typed manually. In manual mode, confirm the pallet with Enter or the button instead of auto-submit.\">i</span></label>"
+    }
+  ]
+}
