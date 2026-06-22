@@ -1,0 +1,11 @@
+{
+  "commit_message": "Remove white side tab overlap",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Remove active side-tab overlap into drawer content */\n    .side-tab-panel .tab-btn::before,\n    .side-tab-panel .tab-btn.active::before,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn::before,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active::before {\n      display: none !important;\n      opacity: 0 !important;\n    }\n\n    .side-tab-panel .tab-btn,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn {\n      margin-left: 0 !important;\n    }\n\n    .side-tab-panel .tab-btn.active,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active {\n      border-left: 0 !important;\n      box-shadow: 8px 10px 24px rgba(8, 20, 34, 0.18) !important;\n    }\n"
+    }
+  ]
+}
