@@ -1967,6 +1967,53 @@
         border-radius: 16px !important;
       }
     }
+
+    /* Clean initial pallet lookup screen */
+    .grid > main.panel .section-head {
+      text-align: center;
+    }
+
+    .grid > main.panel .search-row {
+      justify-content: center;
+    }
+
+    .grid > main.panel .search-row .scan-entry-row {
+      width: min(30%, 460px);
+      min-width: 320px;
+      justify-content: center;
+    }
+
+    .grid > main.panel #palletSearchInput {
+      text-align: center;
+    }
+
+    .grid > main.panel > .inline-option:first-of-type {
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    body:not(.pallet-view-active) .results-head,
+    body:not(.pallet-view-active) .table-wrap,
+    body:not(.pallet-view-active) .meta-grid,
+    body:not(.pallet-view-active) .stacked-panels,
+    body:not(.pallet-view-active) #duplicateWarning,
+    body:not(.pallet-view-active) #revisitNotice,
+    body:not(.pallet-view-active) #scanPanel {
+      display: none !important;
+    }
+
+    @media (max-width: 1180px) {
+      .grid > main.panel .search-row .scan-entry-row {
+        width: min(44%, 520px);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .grid > main.panel .search-row .scan-entry-row {
+        width: 100%;
+        min-width: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2117,8 +2164,8 @@
       <main class="panel">
         <div class="search-card">
           <div>
-            <h2>Pallet Lookup</h2>
-            <p>After loading the data, scan a pallet ID or type it manually.</p>
+            <h2>Scan the first pallet to begin</h2>
+            <p>Scan a pallet ID to load its contents and start the checking process.</p>
           </div>
 
           <div class="search-row">
@@ -2740,7 +2787,12 @@
       pasteInput.value = "";
     }
 
+    function setPalletViewActive(isActive) {
+      document.body.classList.toggle("pallet-view-active", Boolean(isActive));
+    }
+
     function resetResults() {
+      setPalletViewActive(false);
       currentView.type = "none";
       currentView.rows = [];
       currentView.label = "";
@@ -3383,6 +3435,7 @@
     }
 
     function renderResults(rows, palletId, options = {}) {
+      setPalletViewActive(true);
       ensureMatchesBox();
       ensureScanPanel();
       pendingPalletConfirmation = "";
@@ -3597,6 +3650,7 @@
     }
 
     function searchSku() {
+      setPalletViewActive(true);
       const query = normalize(skuSearchInput.value);
       if (!query) {
         setStatus("Type or scan a SKU for reverse lookup.", "warn");
