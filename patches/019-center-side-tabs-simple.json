@@ -1,0 +1,11 @@
+{
+  "commit_message": "Center and enlarge side tabs",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    table {",
+      "insert": "    .side-tab-panel .tabs {\n      top: 50%;\n      right: -56px;\n      height: 80vh;\n      transform: translateY(-50%);\n      justify-content: space-between;\n      gap: 24px;\n    }\n\n    .side-tab-panel .tab-btn {\n      min-width: 56px;\n      min-height: 165px;\n      padding: 20px 12px;\n      border-radius: 20px 0 0 20px;\n      font-size: 14px;\n      letter-spacing: 0.045em;\n      font-weight: 820;\n    }\n\n"
+    }
+  ]
+}
