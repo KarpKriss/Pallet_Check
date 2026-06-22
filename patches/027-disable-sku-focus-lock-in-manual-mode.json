@@ -1,0 +1,17 @@
+{
+  "commit_message": "Disable SKU focus lock in manual entry mode",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      skuScanInput.addEventListener(\"blur\", () => {\n        if (state.scanLock && scanState.activePalletId) {\n          queueFocusActiveInput();\n        }\n      });",
+      "new": "      skuScanInput.addEventListener(\"blur\", () => {\n        if (state.manualScanEntry) {\n          return;\n        }\n        if (state.scanLock && scanState.activePalletId) {\n          queueFocusActiveInput();\n        }\n      });"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      if (state.scanLock && scanState.activePalletId && skuScanInput) {\n        return skuScanInput;\n      }",
+      "new": "      if (state.scanLock && scanState.activePalletId && skuScanInput && !state.manualScanEntry) {\n        return skuScanInput;\n      }"
+    }
+  ]
+}
