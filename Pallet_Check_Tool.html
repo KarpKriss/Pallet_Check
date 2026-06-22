@@ -2584,6 +2584,42 @@
       background: #ffffff !important;
       opacity: 1 !important;
     }
+
+    /* Keep initial scan controls static while lower utility content opens */
+    body:not(.pallet-view-active) .grid {
+      align-items: flex-start !important;
+      justify-content: center !important;
+      padding: clamp(190px, 26vh, 280px) 24px 90px !important;
+    }
+
+    body:not(.pallet-view-active) .grid > main.panel {
+      transform: none !important;
+      margin: 0 auto !important;
+    }
+
+    body:not(.pallet-view-active) .stacked-panels {
+      align-items: start !important;
+      margin-top: 34px !important;
+    }
+
+    body:not(.pallet-view-active) .stacked-panels .accordion-body {
+      margin-top: 0 !important;
+    }
+
+    body:not(.pallet-view-active) .stacked-panels .accordion.open .accordion-body {
+      animation: utilityPanelIn 0.16s ease-out;
+    }
+
+    @keyframes utilityPanelIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body>
