@@ -1,0 +1,17 @@
+{
+  "commit_message": "Animate drawer content on close",
+  "operations": [
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    let pendingPalletConfirmation = \"\";",
+      "insert": "\n    let drawerCloseTimer = null;"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function switchTab(tabName) {\n      const sameOpenTab =\n        sideTabPanel.classList.contains(\"drawer-open\") &&\n        ((tabName === \"import\" && importTab.classList.contains(\"active\")) ||\n          (tabName === \"settings\" && settingsTab.classList.contains(\"active\")) ||\n          (tabName === \"instructions\" && instructionsTab.classList.contains(\"active\")));\n\n      const nextTabName = sameOpenTab ? \"\" : tabName;\n      const showImport = nextTabName === \"import\";\n      const showSettings = nextTabName === \"settings\";\n      const showInstructions = nextTabName === \"instructions\";\n      const drawerOpen = showImport || showSettings || showInstructions;\n\n      sideTabPanel.classList.toggle(\"drawer-open\", drawerOpen);\n      document.body.classList.toggle(\"drawer-active\", drawerOpen);\n      importTabBtn.classList.toggle(\"active\", showImport);\n      settingsTabBtn.classList.toggle(\"active\", showSettings);\n      instructionsTabBtn.classList.toggle(\"active\", showInstructions);\n\n      importTab.classList.toggle(\"active\", showImport);\n      settingsTab.classList.toggle(\"active\", showSettings);\n      instructionsTab.classList.toggle(\"active\", showInstructions);\n    }",
+      "new": "    function clearDrawerActiveState() {\n      importTabBtn.classList.remove(\"active\");\n      settingsTabBtn.classList.remove(\"active\");\n      instructionsTabBtn.classList.remove(\"active\");\n      importTab.classList.remove(\"active\");\n      settingsTab.classList.remove(\"active\");\n      instructionsTab.classList.remove(\"active\");\n    }\n\n    function switchTab(tabName) {\n      clearTimeout(drawerCloseTimer);\n\n      const sameOpenTab =\n        sideTabPanel.classList.contains(\"drawer-open\") &&\n        ((tabName === \"import\" && importTab.classList.contains(\"active\")) ||\n          (tabName === \"settings\" && settingsTab.classList.contains(\"active\")) ||\n          (tabName === \"instructions\" && instructionsTab.classList.contains(\"active\")));\n\n      const nextTabName = sameOpenTab || !tabName ? \"\" : tabName;\n      const showImport = nextTabName === \"import\";\n      const showSettings = nextTabName === \"settings\";\n      const showInstructions = nextTabName === \"instructions\";\n      const drawerOpen = showImport || showSettings || showInstructions;\n\n      if (!drawerOpen) {\n        sideTabPanel.classList.remove(\"drawer-open\");\n        document.body.classList.remove(\"drawer-active\");\n        drawerCloseTimer = setTimeout(clearDrawerActiveState, 300);\n        return;\n      }\n\n      sideTabPanel.classList.add(\"drawer-open\");\n      document.body.classList.add(\"drawer-active\");\n      importTabBtn.classList.toggle(\"active\", showImport);\n      settingsTabBtn.classList.toggle(\"active\", showSettings);\n      instructionsTabBtn.classList.toggle(\"active\", showInstructions);\n\n      importTab.classList.toggle(\"active\", showImport);\n      settingsTab.classList.toggle(\"active\", showSettings);\n      instructionsTab.classList.toggle(\"active\", showInstructions);\n    }"
+    }
+  ]
+}
