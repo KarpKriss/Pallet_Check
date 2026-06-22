@@ -1,0 +1,11 @@
+{
+  "commit_message": "Restore visible side drawer tabs",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Keep drawer tabs visible outside the panel */\n    .side-tab-panel {\n      overflow: visible;\n      box-sizing: border-box;\n    }\n\n    .side-tab-panel .tab-panel {\n      max-height: calc(100vh - 56px);\n      overflow-y: auto;\n      overflow-x: hidden;\n      padding-right: 4px;\n    }\n\n    .side-tab-panel .tabs {\n      position: absolute;\n      top: 28px;\n      right: -44px;\n      left: auto;\n      display: flex;\n      flex-direction: column;\n      z-index: 1004;\n      pointer-events: auto;\n    }\n\n    .side-tab-panel .tab-btn {\n      pointer-events: auto;\n    }\n"
+    }
+  ]
+}
