@@ -2485,6 +2485,46 @@
         width: 100% !important;
       }
     }
+
+    /* Continuous row progress highlight */
+    #resultsBody tr.scan-row-progress,
+    #resultsBody tr.scan-row-done,
+    #resultsBody tr.scan-row-latest {
+      --scan-fill: 0%;
+      background-image: linear-gradient(90deg, rgba(11, 92, 171, 0.12) 0 var(--scan-fill), transparent var(--scan-fill) 100%) !important;
+      background-repeat: no-repeat !important;
+      background-size: 100% 100% !important;
+      animation: rowProgressFill 0.2s ease-out;
+    }
+
+    #resultsBody tr.scan-row-done {
+      background-image: linear-gradient(90deg, rgba(31, 127, 78, 0.13) 0 var(--scan-fill), transparent var(--scan-fill) 100%) !important;
+    }
+
+    #resultsBody tr.scan-row-latest {
+      box-shadow: inset 4px 0 0 var(--accent);
+    }
+
+    #resultsBody tr.scan-row-done.scan-row-latest {
+      box-shadow: inset 4px 0 0 var(--success-ink);
+    }
+
+    #resultsBody tr.scan-row-progress td,
+    #resultsBody tr.scan-row-latest td,
+    #resultsBody tr.scan-row-done td,
+    #resultsBody tr.scan-row-done.scan-row-latest td {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    @keyframes rowProgressFill {
+      from {
+        background-size: 0% 100%;
+      }
+      to {
+        background-size: 100% 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -3753,6 +3793,8 @@
         const hasProgress = Boolean(scanState.activePalletId && required > 0);
         const cappedScanned = Math.min(scanned, required);
         const rowClasses = [];
+        const rowProgress = hasProgress && required > 0 ? Math.max(0, Math.min(100, Math.round((cappedScanned / required) * 100))) : 0;
+        const rowStyle = hasProgress ? ' style="--scan-fill: ' + rowProgress + '%;"' : "";
 
         if (hasProgress && cappedScanned > 0) {
           rowClasses.push("scan-row-progress");
@@ -3769,7 +3811,7 @@
           : "";
 
         return (
-          '<tr class="' + rowClasses.join(" ") + '">' +
+          '<tr class="' + rowClasses.join(" ") + '"' + rowStyle + '>' +
             '<td class="mono">' + escapeHtml(row.sku || "-") + "</td>" +
             '<td class="mono">' + escapeHtml(ean) + "</td>" +
             '<td class="mono">' + escapeHtml(row.qty || "-") + progressText + "</td>" +
