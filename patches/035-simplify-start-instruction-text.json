@@ -1,0 +1,17 @@
+{
+  "commit_message": "Simplify start instruction text",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "            <h2>Scan the first pallet to begin</h2>\n            <p>Scan a pallet ID to load its contents and start the checking process.</p>",
+      "new": "            <p class=\"start-instruction\">Scan the first pallet to begin.</p>"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    .start-instruction {\n      margin: 0 0 18px !important;\n      text-align: center;\n      color: #5f6f82 !important;\n      font-size: 15.5px;\n      line-height: 1.45;\n      font-weight: 520;\n    }\n"
+    }
+  ]
+}
