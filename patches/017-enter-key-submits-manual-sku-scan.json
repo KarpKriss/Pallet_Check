@@ -1,0 +1,11 @@
+{
+  "commit_message": "Allow Enter key to submit manual SKU scans",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      skuScanInput.addEventListener(\"keydown\", (event) => {\n        if (event.key === \"Enter\") {\n          event.preventDefault();\n          clearTimeout(scanAutoSubmitTimer);\n          if (!state.manualScanEntry) {\n            handleSkuScan();\n          }\n        }\n      });",
+      "new": "      skuScanInput.addEventListener(\"keydown\", (event) => {\n        if (event.key === \"Enter\") {\n          event.preventDefault();\n          clearTimeout(scanAutoSubmitTimer);\n          handleSkuScan();\n        }\n      });"
+    }
+  ]
+}
