@@ -1,0 +1,35 @@
+{
+  "commit_message": "Convert tab panels to side drawer layout",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Side drawer layout overrides */\n    .grid {\n      display: block;\n      position: relative;\n      margin-top: 16px;\n    }\n\n    .grid > main.panel {\n      width: min(85%, 1380px);\n      margin: 0 auto;\n    }\n\n    .side-tab-panel {\n      position: fixed;\n      top: 128px;\n      left: 0;\n      width: 380px;\n      max-width: min(380px, calc(100vw - 72px));\n      max-height: calc(100vh - 148px);\n      overflow: visible;\n      transform: translateX(calc(-100% - 2px));\n      transition: transform 0.22s ease, box-shadow 0.22s ease;\n      z-index: 50;\n    }\n\n    .side-tab-panel.drawer-open {\n      transform: translateX(0);\n      box-shadow: 0 20px 50px rgba(16, 32, 51, 0.18);\n    }\n\n    .side-tab-panel:not(.drawer-open) {\n      background: transparent;\n      border-color: transparent;\n      box-shadow: none;\n      backdrop-filter: none;\n    }\n\n    .side-tab-panel:not(.drawer-open) .tab-panel {\n      display: none !important;\n    }\n\n    .side-tab-panel .tabs {\n      position: absolute;\n      top: 22px;\n      right: -54px;\n      left: auto;\n      display: flex;\n      flex-direction: column;\n      gap: 8px;\n      margin: 0;\n      padding: 0;\n      border: 0;\n      background: transparent;\n      width: auto;\n      z-index: 3;\n    }\n\n    @media (max-width: 900px) {\n      .grid > main.panel {\n        width: min(100%, 1180px);\n      }\n\n      .side-tab-panel {\n        top: 106px;\n        width: min(360px, calc(100vw - 64px));\n        padding: 18px;\n      }\n\n      .side-tab-panel .tabs {\n        position: absolute;\n        top: 18px;\n        right: -54px;\n        left: auto;\n        flex-direction: column;\n        gap: 8px;\n        margin: 0;\n        padding: 0;\n        border: 0;\n        border-radius: 0;\n        background: transparent;\n        width: auto;\n      }\n\n      .side-tab-panel .tab-btn {\n        min-width: 44px;\n        min-height: 118px;\n        padding: 14px 9px;\n        border-radius: 18px 0 0 18px;\n        border: 1px solid var(--line);\n        border-right: 0;\n        background: #edf3f8;\n        box-shadow: 0 8px 18px rgba(20, 42, 74, 0.08);\n        writing-mode: vertical-rl;\n        transform: rotate(180deg);\n      }\n\n      .side-tab-panel .tab-btn.active {\n        transform: rotate(180deg) translateX(-8px);\n      }\n    }\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "          <button id=\"importTabBtn\" class=\"tab-btn active\" type=\"button\">Data Import</button>",
+      "new": "          <button id=\"importTabBtn\" class=\"tab-btn\" type=\"button\">Data Import</button>"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        <div id=\"importTab\" class=\"tab-panel active\">",
+      "new": "        <div id=\"importTab\" class=\"tab-panel\">"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    const importTabBtn = document.getElementById(\"importTabBtn\");\n    const settingsTabBtn = document.getElementById(\"settingsTabBtn\");\n    const instructionsTabBtn = document.getElementById(\"instructionsTabBtn\");\n    const importTab = document.getElementById(\"importTab\");\n    const settingsTab = document.getElementById(\"settingsTab\");\n    const instructionsTab = document.getElementById(\"instructionsTab\");",
+      "new": "    const sideTabPanel = document.querySelector(\".side-tab-panel\");\n    const importTabBtn = document.getElementById(\"importTabBtn\");\n    const settingsTabBtn = document.getElementById(\"settingsTabBtn\");\n    const instructionsTabBtn = document.getElementById(\"instructionsTabBtn\");\n    const importTab = document.getElementById(\"importTab\");\n    const settingsTab = document.getElementById(\"settingsTab\");\n    const instructionsTab = document.getElementById(\"instructionsTab\");"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function switchTab(tabName) {\n      const showImport = tabName === \"import\";\n      const showSettings = tabName === \"settings\";\n      const showInstructions = tabName === \"instructions\";\n\n      importTabBtn.classList.toggle(\"active\", showImport);\n      settingsTabBtn.classList.toggle(\"active\", showSettings);\n      instructionsTabBtn.classList.toggle(\"active\", showInstructions);\n\n      importTab.classList.toggle(\"active\", showImport);\n      settingsTab.classList.toggle(\"active\", showSettings);\n      instructionsTab.classList.toggle(\"active\", showInstructions);\n    }",
+      "new": "    function switchTab(tabName) {\n      const sameOpenTab =\n        sideTabPanel.classList.contains(\"drawer-open\") &&\n        ((tabName === \"import\" && importTab.classList.contains(\"active\")) ||\n          (tabName === \"settings\" && settingsTab.classList.contains(\"active\")) ||\n          (tabName === \"instructions\" && instructionsTab.classList.contains(\"active\")));\n\n      const nextTabName = sameOpenTab ? \"\" : tabName;\n      const showImport = nextTabName === \"import\";\n      const showSettings = nextTabName === \"settings\";\n      const showInstructions = nextTabName === \"instructions\";\n      const drawerOpen = showImport || showSettings || showInstructions;\n\n      sideTabPanel.classList.toggle(\"drawer-open\", drawerOpen);\n      importTabBtn.classList.toggle(\"active\", showImport);\n      settingsTabBtn.classList.toggle(\"active\", showSettings);\n      instructionsTabBtn.classList.toggle(\"active\", showInstructions);\n\n      importTab.classList.toggle(\"active\", showImport);\n      settingsTab.classList.toggle(\"active\", showSettings);\n      instructionsTab.classList.toggle(\"active\", showInstructions);\n    }"
+    }
+  ]
+}
