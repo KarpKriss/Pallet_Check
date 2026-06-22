@@ -1308,6 +1308,85 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Clear All confirmation modal */
+    .confirm-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(8, 20, 34, 0.42);
+      backdrop-filter: blur(4px);
+      z-index: 1300;
+    }
+
+    .confirm-modal.active {
+      display: flex;
+    }
+
+    .confirm-card {
+      width: min(420px, 100%);
+      padding: 22px;
+      border-radius: 24px;
+      background: #ffffff;
+      border: 1px solid rgba(197, 208, 220, 0.9);
+      box-shadow: 0 26px 70px rgba(8, 20, 34, 0.24);
+      color: #102033;
+      animation: confirmCardIn 0.18s ease both;
+    }
+
+    @keyframes confirmCardIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .confirm-kicker {
+      margin-bottom: 8px;
+      font-size: 11px;
+      font-weight: 820;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8a2d1c;
+    }
+
+    .confirm-card h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+    }
+
+    .confirm-card p {
+      margin: 0;
+      color: #5d6b7c;
+      line-height: 1.48;
+      font-size: 14.5px;
+    }
+
+    .confirm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .confirm-actions button {
+      min-height: 42px;
+      border-radius: 999px;
+      padding: 0 16px;
+      font-weight: 760;
+    }
+
+    .confirm-actions .btn-danger {
+      background: #fbe7e2;
+      color: #8a2d1c;
+    }
+
+    .confirm-actions .btn-danger:hover {
+      background: #f7d2c8;
+    }
   </style>
 </head>
 <body>
@@ -1328,6 +1407,18 @@
         <div id="workflowModalKicker" class="workflow-modal-kicker">Workflow Message</div>
         <h2 id="workflowModalTitle" class="workflow-modal-title">Ready</h2>
         <p id="workflowModalMessage" class="workflow-modal-message"></p>
+      </div>
+    </div>
+
+    <div id="clearAllConfirmModal" class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="clearAllConfirmTitle">
+      <div class="confirm-card">
+        <div class="confirm-kicker">Destructive action</div>
+        <h2 id="clearAllConfirmTitle">Clear all data?</h2>
+        <p>Are you sure you want to clear everything? This will remove all loaded batches, records and current results. This action cannot be undone.</p>
+        <div class="confirm-actions">
+          <button id="cancelClearAllBtn" class="btn-secondary" type="button">Cancel</button>
+          <button id="confirmClearAllBtn" class="btn-danger" type="button">Clear All</button>
+        </div>
       </div>
     </div>
 
@@ -1622,6 +1713,9 @@
     const settingsTab = document.getElementById("settingsTab");
     const instructionsTab = document.getElementById("instructionsTab");
     const clearAllBtn = document.getElementById("clearAllBtn");
+    const clearAllConfirmModal = document.getElementById("clearAllConfirmModal");
+    const cancelClearAllBtn = document.getElementById("cancelClearAllBtn");
+    const confirmClearAllBtn = document.getElementById("confirmClearAllBtn");
     const pasteInput = document.getElementById("pasteInput");
     const addBatchBtn = document.getElementById("addBatchBtn");
     const clearPasteBtn = document.getElementById("clearPasteBtn");
@@ -2911,6 +3005,14 @@
       setStatus("Completed pallets history has been exported to CSV.", "info");
     }
 
+    function openClearAllConfirm() {
+      clearAllConfirmModal.classList.add("active");
+    }
+
+    function closeClearAllConfirm() {
+      clearAllConfirmModal.classList.remove("active");
+    }
+
     function clearAllData() {
       state.rows = [];
       state.batchCount = 0;
@@ -3006,7 +3108,17 @@
     function bindEvents() {
       addBatchBtn.addEventListener("click", addPastedBatch);
       clearPasteBtn.addEventListener("click", () => { pasteInput.value = ""; });
-      clearAllBtn.addEventListener("click", clearAllData);
+      clearAllBtn.addEventListener("click", openClearAllConfirm);
+      cancelClearAllBtn.addEventListener("click", closeClearAllConfirm);
+      confirmClearAllBtn.addEventListener("click", () => {
+        closeClearAllConfirm();
+        clearAllData();
+      });
+      clearAllConfirmModal.addEventListener("pointerdown", (event) => {
+        if (event.target === clearAllConfirmModal) {
+          closeClearAllConfirm();
+        }
+      });
       importTabBtn.addEventListener("click", () => switchTab("import"));
       settingsTabBtn.addEventListener("click", () => switchTab("settings"));
       instructionsTabBtn.addEventListener("click", () => switchTab("instructions"));
