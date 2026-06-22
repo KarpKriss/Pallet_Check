@@ -1,0 +1,17 @@
+{
+  "commit_message": "Make lower accordion panels exclusive",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function bindEvents() {",
+      "insert": "    function toggleExclusiveAccordion(targetSection) {\n      const sections = [wrongScanSection, completedHistorySection, advancedTools];\n      const shouldOpen = !targetSection.classList.contains(\"open\");\n\n      sections.forEach((section) => {\n        const isTarget = section === targetSection;\n        section.classList.toggle(\"open\", isTarget && shouldOpen);\n        const toggle = section.querySelector(\".accordion-toggle\");\n        if (toggle) {\n          toggle.setAttribute(\"aria-expanded\", String(isTarget && shouldOpen));\n        }\n      });\n    }\n\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      wrongScanToggle.addEventListener(\"click\", () => {\n        wrongScanSection.classList.toggle(\"open\");\n      });\n      completedHistoryToggle.addEventListener(\"click\", () => {\n        completedHistorySection.classList.toggle(\"open\");\n      });\n      advancedToolsToggle.addEventListener(\"click\", () => {\n        advancedTools.classList.toggle(\"open\");\n      });",
+      "new": "      wrongScanToggle.addEventListener(\"click\", () => {\n        toggleExclusiveAccordion(wrongScanSection);\n      });\n      completedHistoryToggle.addEventListener(\"click\", () => {\n        toggleExclusiveAccordion(completedHistorySection);\n      });\n      advancedToolsToggle.addEventListener(\"click\", () => {\n        toggleExclusiveAccordion(advancedTools);\n      });"
+    }
+  ]
+}
