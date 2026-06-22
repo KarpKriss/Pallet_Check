@@ -2893,9 +2893,13 @@
       advancedToolsToggle.addEventListener("click", () => {
         advancedTools.classList.toggle("open");
       });
-      document.addEventListener("pointerdown", () => {
+      document.addEventListener("pointerdown", (event) => {
         if (workflowModal.classList.contains("active")) {
           hideWorkflowModal();
+        }
+
+        if (sideTabPanel.classList.contains("drawer-open") && !sideTabPanel.contains(event.target)) {
+          switchTab("");
         }
       });
       scanModeSelect.addEventListener("change", () => {
