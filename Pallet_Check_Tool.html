@@ -1604,6 +1604,49 @@
     .session-restore-note.hidden {
       display: none !important;
     }
+
+    /* Settings tab plain vertical fields */
+    #settingsTab .settings-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+
+    #settingsTab .field-card {
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    #settingsTab .field-card:focus-within {
+      border-color: transparent !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    #settingsTab .field-card label {
+      display: block !important;
+      margin: 0 0 7px !important;
+      font-size: 11px !important;
+      letter-spacing: 0.075em !important;
+      color: #a9bbcf !important;
+    }
+
+    #settingsTab .field-card input[type="text"] {
+      width: 80% !important;
+      max-width: 280px !important;
+      height: 44px !important;
+      border-radius: 14px !important;
+    }
+
+    @media (max-width: 560px) {
+      #settingsTab .field-card input[type="text"] {
+        width: 100% !important;
+        max-width: none !important;
+      }
+    }
   </style>
 </head>
 <body>
