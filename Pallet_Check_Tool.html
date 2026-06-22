@@ -889,6 +889,107 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Side drawer layout overrides */
+    .grid {
+      display: block;
+      position: relative;
+      margin-top: 16px;
+    }
+
+    .grid > main.panel {
+      width: min(85%, 1380px);
+      margin: 0 auto;
+    }
+
+    .side-tab-panel {
+      position: fixed;
+      top: 128px;
+      left: 0;
+      width: 380px;
+      max-width: min(380px, calc(100vw - 72px));
+      max-height: calc(100vh - 148px);
+      overflow: visible;
+      transform: translateX(calc(-100% - 2px));
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      z-index: 50;
+    }
+
+    .side-tab-panel.drawer-open {
+      transform: translateX(0);
+      box-shadow: 0 20px 50px rgba(16, 32, 51, 0.18);
+    }
+
+    .side-tab-panel:not(.drawer-open) {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .side-tab-panel:not(.drawer-open) .tab-panel {
+      display: none !important;
+    }
+
+    .side-tab-panel .tabs {
+      position: absolute;
+      top: 22px;
+      right: -54px;
+      left: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      width: auto;
+      z-index: 3;
+    }
+
+    @media (max-width: 900px) {
+      .grid > main.panel {
+        width: min(100%, 1180px);
+      }
+
+      .side-tab-panel {
+        top: 106px;
+        width: min(360px, calc(100vw - 64px));
+        padding: 18px;
+      }
+
+      .side-tab-panel .tabs {
+        position: absolute;
+        top: 18px;
+        right: -54px;
+        left: auto;
+        flex-direction: column;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        width: auto;
+      }
+
+      .side-tab-panel .tab-btn {
+        min-width: 44px;
+        min-height: 118px;
+        padding: 14px 9px;
+        border-radius: 18px 0 0 18px;
+        border: 1px solid var(--line);
+        border-right: 0;
+        background: #edf3f8;
+        box-shadow: 0 8px 18px rgba(20, 42, 74, 0.08);
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+      }
+
+      .side-tab-panel .tab-btn.active {
+        transform: rotate(180deg) translateX(-8px);
+      }
+    }
   </style>
 </head>
 <body>
@@ -915,12 +1016,12 @@
     <section class="grid">
       <aside class="panel side-tab-panel">
         <div class="tabs">
-          <button id="importTabBtn" class="tab-btn active" type="button">Data Import</button>
+          <button id="importTabBtn" class="tab-btn" type="button">Data Import</button>
           <button id="settingsTabBtn" class="tab-btn" type="button">Settings</button>
           <button id="instructionsTabBtn" class="tab-btn" type="button">Instructions</button>
         </div>
 
-        <div id="importTab" class="tab-panel active">
+        <div id="importTab" class="tab-panel">
           <h2>Data Import</h2>
           <p>You can add more record batches. New data is appended to the data already loaded until you clear everything.</p>
 
@@ -1195,6 +1296,7 @@
     };
     const BUILTIN_EAN_MAP = window.EAN_SKU_MAP || {};
 
+    const sideTabPanel = document.querySelector(".side-tab-panel");
     const importTabBtn = document.getElementById("importTabBtn");
     const settingsTabBtn = document.getElementById("settingsTabBtn");
     const instructionsTabBtn = document.getElementById("instructionsTabBtn");
@@ -1488,10 +1590,19 @@
     }
 
     function switchTab(tabName) {
-      const showImport = tabName === "import";
-      const showSettings = tabName === "settings";
-      const showInstructions = tabName === "instructions";
+      const sameOpenTab =
+        sideTabPanel.classList.contains("drawer-open") &&
+        ((tabName === "import" && importTab.classList.contains("active")) ||
+          (tabName === "settings" && settingsTab.classList.contains("active")) ||
+          (tabName === "instructions" && instructionsTab.classList.contains("active")));
 
+      const nextTabName = sameOpenTab ? "" : tabName;
+      const showImport = nextTabName === "import";
+      const showSettings = nextTabName === "settings";
+      const showInstructions = nextTabName === "instructions";
+      const drawerOpen = showImport || showSettings || showInstructions;
+
+      sideTabPanel.classList.toggle("drawer-open", drawerOpen);
       importTabBtn.classList.toggle("active", showImport);
       settingsTabBtn.classList.toggle("active", showSettings);
       instructionsTabBtn.classList.toggle("active", showInstructions);
