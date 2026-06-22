@@ -2244,6 +2244,43 @@
     body:not(.pallet-view-active) .stacked-panels .accordion.open .accordion-body {
       display: block !important;
     }
+
+    /* Use table rows as the scan checklist instead of SKU chips */
+    #skuChipList,
+    .sku-chip-list {
+      display: none !important;
+    }
+
+    #resultsBody tr.scan-row-progress td {
+      background: #f1f7ff;
+    }
+
+    #resultsBody tr.scan-row-latest td {
+      background: #e6f2ff !important;
+      box-shadow: inset 4px 0 0 var(--accent);
+    }
+
+    #resultsBody tr.scan-row-done td {
+      background: #ecf8f1;
+    }
+
+    #resultsBody tr.scan-row-done.scan-row-latest td {
+      background: #e4f5ec !important;
+      box-shadow: inset 4px 0 0 var(--success-ink);
+    }
+
+    .row-scan-progress {
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+      line-height: 1.2;
+      color: #708196;
+      font-weight: 650;
+    }
+
+    tr.scan-row-done .row-scan-progress {
+      color: var(--success-ink);
+    }
   </style>
 </head>
 <body>
@@ -2668,7 +2705,8 @@
       requirements: new Map(),
       scannedCounts: new Map(),
       completionLogged: false,
-      status: "not-started"
+      status: "not-started",
+      lastScannedSku: ""
     };
 
     function stripEanPrefix(ean) {
@@ -3143,6 +3181,7 @@
         }
         scanState.scannedCounts = new Map();
         scanState.completionLogged = false;
+        scanState.lastScannedSku = "";
         updateScanStatus();
         setStatus("Scanned items for the current pallet have been reset.", "info");
         queueFocusActiveInput();
@@ -3265,6 +3304,7 @@
       scanState.scannedCounts = new Map();
       scanState.completionLogged = false;
       scanState.status = "not-started";
+      scanState.lastScannedSku = "";
     }
 
     function updateWorkflowManualPalletModeUi() {
@@ -3505,11 +3545,31 @@
     function renderRowTable(rows) {
       resultsBody.innerHTML = rows.map((row) => {
         const ean = getSkuDisplayEan(row.sku);
+        const required = scanState.requirements.get(row.sku) || 0;
+        const scanned = scanState.scannedCounts.get(row.sku) || 0;
+        const hasProgress = Boolean(scanState.activePalletId && required > 0);
+        const cappedScanned = Math.min(scanned, required);
+        const rowClasses = [];
+
+        if (hasProgress && cappedScanned > 0) {
+          rowClasses.push("scan-row-progress");
+        }
+        if (hasProgress && cappedScanned >= required) {
+          rowClasses.push("scan-row-done");
+        }
+        if (hasProgress && scanState.lastScannedSku === row.sku) {
+          rowClasses.push("scan-row-latest");
+        }
+
+        const progressText = hasProgress
+          ? '<span class="row-scan-progress">' + cappedScanned + ' / ' + required + ' scanned</span>'
+          : "";
+
         return (
-          "<tr>" +
+          '<tr class="' + rowClasses.join(" ") + '">' +
             '<td class="mono">' + escapeHtml(row.sku || "-") + "</td>" +
             '<td class="mono">' + escapeHtml(ean) + "</td>" +
-            '<td class="mono">' + escapeHtml(row.qty || "-") + "</td>" +
+            '<td class="mono">' + escapeHtml(row.qty || "-") + progressText + "</td>" +
             '<td class="mono">' + escapeHtml(row.palletId || "-") + "</td>" +
             '<td class="mono">' + escapeHtml(row.containerId || "-") + "</td>" +
           "</tr>"
@@ -3533,6 +3593,9 @@
         scanStatus.textContent = "Search for a pallet ID first.";
         scanStatus.className = "status info";
         skuChipList.innerHTML = "";
+        if (currentView.rows.length > 0) {
+          renderRowTable(currentView.rows);
+        }
         return;
       }
 
@@ -3554,15 +3617,10 @@
         scanStatus.className = "status info";
       }
 
-      skuChipList.innerHTML = [...scanState.requirements.entries()].map(([sku, required]) => {
-        const scanned = scanState.scannedCounts.get(sku) || 0;
-        const doneClass = scanned >= required ? " done" : "";
-        const ean = getSkuDisplayEan(sku);
-        return '<div class="sku-chip' + doneClass + ' mono">' +
-          escapeHtml(sku) +
-          '<span class="sub">EAN: ' + escapeHtml(ean) + ' | ' + scanned + " / " + required + "</span>" +
-          "</div>";
-      }).join("");
+      skuChipList.innerHTML = "";
+      if (currentView.rows.length > 0) {
+        renderRowTable(currentView.rows);
+      }
     }
 
     function startScanWorkflow(rows, palletId) {
@@ -3626,6 +3684,7 @@
       }
 
       scanState.scannedCounts.set(resolvedSku, current + 1);
+      scanState.lastScannedSku = resolvedSku;
       if (pendingPalletConfirmation) {
         pendingPalletConfirmation = "";
         hideWorkflowModal();
