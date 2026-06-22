@@ -1,0 +1,11 @@
+{
+  "commit_message": "Fix scattered side tabs layout",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    .side-tab-panel .tabs {\n      top: 50%;\n      right: -56px;\n      height: 80vh;\n      transform: translateY(-50%);\n      justify-content: space-between;\n      gap: 24px;\n    }\n\n    .side-tab-panel .tab-btn {\n      min-width: 56px;\n      min-height: 165px;\n      padding: 20px 12px;\n      border-radius: 20px 0 0 20px;\n      font-size: 14px;\n      letter-spacing: 0.045em;\n      font-weight: 820;\n    }",
+      "new": "    .side-tab-panel .tabs {\n      top: 50%;\n      right: -54px;\n      height: auto;\n      max-height: calc(100vh - 96px);\n      transform: translateY(-50%);\n      justify-content: center;\n      gap: 14px;\n    }\n\n    .side-tab-panel .tab-btn {\n      min-width: 54px;\n      min-height: 128px;\n      padding: 16px 11px;\n      border-radius: 18px 0 0 18px;\n      font-size: 13px;\n      letter-spacing: 0.045em;\n      font-weight: 820;\n    }"
+    }
+  ]
+}
