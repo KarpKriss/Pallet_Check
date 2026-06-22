@@ -2281,6 +2281,42 @@
     tr.scan-row-done .row-scan-progress {
       color: var(--success-ink);
     }
+
+    /* Clean SKU scan workflow area */
+    .scan-panel {
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      gap: 12px !important;
+    }
+
+    .sku-scan-instruction {
+      text-align: center;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 760;
+      color: #26384c;
+      margin: 4px 0 10px;
+    }
+
+    #scanStatus {
+      display: none !important;
+    }
+
+    #scanProgressText.scan-progress-label {
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 760;
+      color: #34475c;
+      margin: 8px 0 -2px;
+    }
+
+    .scan-panel .progress-bar {
+      height: 10px;
+    }
   </style>
 </head>
 <body>
@@ -2680,6 +2716,7 @@
     let manualScanToggle = null;
     let manualScanSubmitBtn = null;
     let scanStatus = null;
+    let scanInstruction = null;
     let scanProgressText = null;
     let scanProgressFill = null;
     let skuChipList = null;
@@ -3098,10 +3135,7 @@
       wrapper.id = "scanPanel";
       wrapper.className = "scan-panel";
       wrapper.innerHTML = `
-        <div>
-          <strong>SKU Scanning</strong>
-          <div class="results-meta">The pallet will only be completed after all required scans are done. You can type a SKU or scan an EAN.</div>
-        </div>
+        <div id="scanInstruction" class="sku-scan-instruction">Scan the first SKU to begin</div>
         <div class="search-row">
           <div class="scan-entry-row">
             <input id="skuScanInput" type="text" placeholder="Scan or type a SKU or EAN">
@@ -3110,9 +3144,9 @@
           <button id="clearScansBtn" class="btn-secondary" type="button">Reset Scans</button>
         </div>
         <label class="inline-option manual-sku-option"><input id="manualScanToggle" type="checkbox"> Enable manual entry mode <span class="info-hint" tabindex="0" data-tooltip="Use this when you want to type a SKU/EAN manually instead of auto-submitting every scanner input. In manual mode, confirm the value with Enter or the button.">?</span></label>
-        <div id="scanStatus" class="status info">Search for a pallet ID first.</div>
+        <div id="scanProgressText" class="scan-progress-label">0/0 SKU</div>
         <div class="progress-bar"><div id="scanProgressFill" class="progress-fill"></div></div>
-        <div id="scanProgressText" class="results-meta">Progress: 0 / 0</div>
+        <div id="scanStatus" class="status info">Search for a pallet ID first.</div>
         <div id="skuChipList" class="sku-chip-list"></div>
       `;
       anchor.parentNode.insertBefore(wrapper, anchor);
@@ -3122,6 +3156,7 @@
       manualScanToggle = document.getElementById("manualScanToggle");
       manualScanSubmitBtn = document.getElementById("manualScanSubmitBtn");
       scanStatus = document.getElementById("scanStatus");
+      scanInstruction = document.getElementById("scanInstruction");
       scanProgressText = document.getElementById("scanProgressText");
       scanProgressFill = document.getElementById("scanProgressFill");
       skuChipList = document.getElementById("skuChipList");
@@ -3577,6 +3612,23 @@
       }).join("");
     }
 
+    function updateScanInstructionAndProgress(done, total) {
+      if (scanInstruction) {
+        if (total > 0 && done >= total) {
+          scanInstruction.textContent = "Pallet completed";
+        } else if (done > 0) {
+          scanInstruction.textContent = "Scan the next SKU to continue";
+        } else {
+          scanInstruction.textContent = "Scan the first SKU to begin";
+        }
+      }
+
+      if (scanProgressText) {
+        const unit = scanState.mode === "quantity" ? "pieces" : "SKU";
+        scanProgressText.textContent = done + "/" + total + " " + unit;
+      }
+    }
+
     function updateScanStatus() {
       ensureScanPanel();
       const total = sumRequirementCounts();
@@ -3587,7 +3639,7 @@
       setStatusBadge(scanState.status);
       scanPanel.classList.toggle("active", total > 0);
       scanProgressFill.style.width = percent + "%";
-      scanProgressText.textContent = "Progress: " + done + " / " + total + " scans";
+      updateScanInstructionAndProgress(done, total);
 
       if (total === 0) {
         scanStatus.textContent = "Search for a pallet ID first.";
