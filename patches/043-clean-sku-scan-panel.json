@@ -1,0 +1,41 @@
+{
+  "commit_message": "Clean SKU scan panel layout",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Clean SKU scan workflow area */\n    .scan-panel {\n      padding: 0 !important;\n      border: 0 !important;\n      border-radius: 0 !important;\n      background: transparent !important;\n      box-shadow: none !important;\n      gap: 12px !important;\n    }\n\n    .sku-scan-instruction {\n      text-align: center;\n      font-size: 17px;\n      line-height: 1.35;\n      font-weight: 760;\n      color: #26384c;\n      margin: 4px 0 10px;\n    }\n\n    #scanStatus {\n      display: none !important;\n    }\n\n    #scanProgressText.scan-progress-label {\n      text-align: center;\n      font-size: 15px;\n      line-height: 1.3;\n      font-weight: 760;\n      color: #34475c;\n      margin: 8px 0 -2px;\n    }\n\n    .scan-panel .progress-bar {\n      height: 10px;\n    }\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    let scanStatus = null;\n    let scanProgressText = null;",
+      "new": "    let scanStatus = null;\n    let scanInstruction = null;\n    let scanProgressText = null;"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      wrapper.innerHTML = `\n        <div>\n          <strong>SKU Scanning</strong>\n          <div class=\"results-meta\">The pallet will only be completed after all required scans are done. You can type a SKU or scan an EAN.</div>\n        </div>\n        <div class=\"search-row\">\n          <div class=\"scan-entry-row\">\n            <input id=\"skuScanInput\" type=\"text\" placeholder=\"Scan or type a SKU or EAN\">\n            <button id=\"manualScanSubmitBtn\" class=\"btn-primary hidden\" type=\"button\">Enter</button>\n          </div>\n          <button id=\"clearScansBtn\" class=\"btn-secondary\" type=\"button\">Reset Scans</button>\n        </div>\n        <label class=\"inline-option manual-sku-option\"><input id=\"manualScanToggle\" type=\"checkbox\"> Enable manual entry mode <span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when you want to type a SKU/EAN manually instead of auto-submitting every scanner input. In manual mode, confirm the value with Enter or the button.\">?</span></label>\n        <div id=\"scanStatus\" class=\"status info\">Search for a pallet ID first.</div>\n        <div class=\"progress-bar\"><div id=\"scanProgressFill\" class=\"progress-fill\"></div></div>\n        <div id=\"scanProgressText\" class=\"results-meta\">Progress: 0 / 0</div>\n        <div id=\"skuChipList\" class=\"sku-chip-list\"></div>\n      `;",
+      "new": "      wrapper.innerHTML = `\n        <div id=\"scanInstruction\" class=\"sku-scan-instruction\">Scan the first SKU to begin</div>\n        <div class=\"search-row\">\n          <div class=\"scan-entry-row\">\n            <input id=\"skuScanInput\" type=\"text\" placeholder=\"Scan or type a SKU or EAN\">\n            <button id=\"manualScanSubmitBtn\" class=\"btn-primary hidden\" type=\"button\">Enter</button>\n          </div>\n          <button id=\"clearScansBtn\" class=\"btn-secondary\" type=\"button\">Reset Scans</button>\n        </div>\n        <label class=\"inline-option manual-sku-option\"><input id=\"manualScanToggle\" type=\"checkbox\"> Enable manual entry mode <span class=\"info-hint\" tabindex=\"0\" data-tooltip=\"Use this when you want to type a SKU/EAN manually instead of auto-submitting every scanner input. In manual mode, confirm the value with Enter or the button.\">?</span></label>\n        <div id=\"scanProgressText\" class=\"scan-progress-label\">0/0 SKU</div>\n        <div class=\"progress-bar\"><div id=\"scanProgressFill\" class=\"progress-fill\"></div></div>\n        <div id=\"scanStatus\" class=\"status info\">Search for a pallet ID first.</div>\n        <div id=\"skuChipList\" class=\"sku-chip-list\"></div>\n      `;"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      manualScanToggle = document.getElementById(\"manualScanToggle\");\n      manualScanSubmitBtn = document.getElementById(\"manualScanSubmitBtn\");\n      scanStatus = document.getElementById(\"scanStatus\");\n      scanProgressText = document.getElementById(\"scanProgressText\");",
+      "new": "      manualScanToggle = document.getElementById(\"manualScanToggle\");\n      manualScanSubmitBtn = document.getElementById(\"manualScanSubmitBtn\");\n      scanStatus = document.getElementById(\"scanStatus\");\n      scanInstruction = document.getElementById(\"scanInstruction\");\n      scanProgressText = document.getElementById(\"scanProgressText\");"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function updateScanStatus() {",
+      "insert": "    function updateScanInstructionAndProgress(done, total) {\n      if (scanInstruction) {\n        if (total > 0 && done >= total) {\n          scanInstruction.textContent = \"Pallet completed\";\n        } else if (done > 0) {\n          scanInstruction.textContent = \"Scan the next SKU to continue\";\n        } else {\n          scanInstruction.textContent = \"Scan the first SKU to begin\";\n        }\n      }\n\n      if (scanProgressText) {\n        const unit = scanState.mode === \"quantity\" ? \"pieces\" : \"SKU\";\n        scanProgressText.textContent = done + \"/\" + total + \" \" + unit;\n      }\n    }\n\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      scanProgressFill.style.width = percent + \"%\";\n      scanProgressText.textContent = \"Progress: \" + done + \" / \" + total + \" scans\";",
+      "new": "      scanProgressFill.style.width = percent + \"%\";\n      updateScanInstructionAndProgress(done, total);"
+    }
+  ]
+}
