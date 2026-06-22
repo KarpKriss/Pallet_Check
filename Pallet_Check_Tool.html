@@ -46,32 +46,27 @@
     }
 
     .hero {
-      padding: 16px 24px;
-      border-radius: var(--radius-large);
-      background:
-        linear-gradient(135deg, rgba(11, 92, 171, 0.05), rgba(255, 255, 255, 0.94) 42%),
-        var(--surface-strong);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--line);
+      padding: 18px 0 10px;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      border-radius: 0;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, transparent 0%, rgba(11, 92, 171, 0.04) 100%);
-      pointer-events: none;
+      display: none;
     }
 
     .hero-title {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 14px;
       position: relative;
       z-index: 1;
+      text-align: center;
     }
 
     .hero-icon {
