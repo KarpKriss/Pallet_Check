@@ -1,0 +1,11 @@
+{
+  "commit_message": "Make side stats compact and sticky",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Compact sticky side stats */\n    body.pallet-view-active .meta-grid {\n      align-self: start !important;\n      align-content: start !important;\n      height: auto !important;\n      min-height: 0 !important;\n      position: sticky !important;\n      top: 18px !important;\n      grid-auto-rows: min-content !important;\n    }\n\n    body.pallet-view-active .meta-card {\n      min-height: 0 !important;\n      height: 68px !important;\n      padding: 11px 14px !important;\n      flex: 0 0 auto !important;\n      justify-content: center !important;\n    }\n\n    body.pallet-view-active .meta-card .label {\n      font-size: 10.5px !important;\n      line-height: 1.1 !important;\n    }\n\n    body.pallet-view-active .meta-card .value {\n      margin-top: 6px !important;\n      font-size: 17px !important;\n      line-height: 1.15 !important;\n    }\n\n    @media (max-width: 1050px) {\n      body.pallet-view-active .meta-grid {\n        position: static !important;\n      }\n\n      body.pallet-view-active .meta-card {\n        height: 64px !important;\n      }\n    }\n"
+    }
+  ]
+}
