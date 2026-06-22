@@ -1766,6 +1766,103 @@
       border-radius: 0 !important;
       backdrop-filter: none !important;
     }
+
+    /* Polished browser-style lower tabs */
+    .stacked-panels {
+      margin-top: 16px !important;
+      border-bottom: 0 !important;
+      align-items: end !important;
+    }
+
+    .stacked-panels .accordion-toggle {
+      min-height: 52px !important;
+      margin: 0 6px -1px 0 !important;
+      padding: 10px 16px 11px !important;
+      border: 1px solid #d6e0eb !important;
+      border-bottom: 1px solid #d6e0eb !important;
+      border-radius: 14px 14px 0 0 !important;
+      background: #f3f7fb !important;
+      color: #43566b !important;
+      box-shadow: none !important;
+      opacity: 0.92;
+    }
+
+    .stacked-panels .accordion-toggle > span:first-child {
+      display: block;
+      min-width: 0;
+    }
+
+    .stacked-panels .accordion-toggle:hover {
+      background: #f8fbfe !important;
+      color: #1d3148 !important;
+      opacity: 1;
+    }
+
+    .stacked-panels .accordion.open .accordion-toggle {
+      background: #ffffff !important;
+      color: #102033 !important;
+      border-color: #d6e0eb !important;
+      border-bottom-color: #ffffff !important;
+      box-shadow: 0 -10px 24px rgba(8, 20, 34, 0.045) !important;
+      opacity: 1;
+      z-index: 4 !important;
+    }
+
+    .stacked-panels .accordion-meta {
+      margin-top: 2px !important;
+      font-size: 11.5px !important;
+      font-weight: 560 !important;
+      color: #7a8898 !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stacked-panels #advancedTools:not(.open) .accordion-toggle {
+      background: #f7f9fc !important;
+      color: #637386 !important;
+      opacity: 0.78;
+    }
+
+    .stacked-panels #advancedTools:not(.open) .accordion-meta {
+      color: #8c98a6 !important;
+    }
+
+    .stacked-panels .accordion-body {
+      margin-top: -1px !important;
+      padding: 16px !important;
+      border: 1px solid #d6e0eb !important;
+      border-radius: 0 16px 16px 16px !important;
+      background: #ffffff !important;
+      box-shadow: 0 18px 40px rgba(8, 20, 34, 0.045) !important;
+    }
+
+    .stacked-panels .list-box {
+      max-height: 190px !important;
+    }
+
+    @media (max-width: 760px) {
+      .stacked-panels {
+        margin-top: 12px !important;
+        gap: 8px !important;
+      }
+
+      .stacked-panels .accordion-toggle {
+        margin: 0 !important;
+        border-radius: 14px !important;
+        border-bottom: 1px solid #d6e0eb !important;
+      }
+
+      .stacked-panels .accordion.open .accordion-toggle {
+        border-bottom-color: #d6e0eb !important;
+      }
+
+      .stacked-panels .accordion-body {
+        margin-top: 0 !important;
+        border-radius: 0 0 14px 14px !important;
+        box-shadow: none !important;
+      }
+    }
   </style>
 </head>
 <body>
