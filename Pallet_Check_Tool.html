@@ -2759,6 +2759,67 @@
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       }
     }
+
+    /* Paginated activity lists */
+    .accordion-body .list-box {
+      max-height: none !important;
+      overflow: visible !important;
+    }
+
+    .activity-page-info {
+      margin: 0 0 10px;
+      text-align: center;
+      color: #718196;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .activity-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #edf2f7;
+    }
+
+    .activity-page-btn {
+      min-width: 34px;
+      height: 34px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid #d7e1ec;
+      background: #ffffff;
+      color: #42566c;
+      font-size: 12.5px;
+      font-weight: 760;
+      box-shadow: none;
+    }
+
+    .activity-page-btn:hover {
+      transform: none;
+      background: #eef6ff;
+      border-color: rgba(11, 92, 171, 0.24);
+      color: #0b5cab;
+    }
+
+    .activity-page-btn.active {
+      background: #0b5cab;
+      border-color: #0b5cab;
+      color: #ffffff;
+    }
+
+    .activity-page-ellipsis {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 34px;
+      color: #8a98a8;
+      font-weight: 800;
+    }
   </style>
 </head>
 <body>
@@ -3919,6 +3980,84 @@
       saveState();
     }
 
+    const ACTIVITY_PAGE_SIZE = 20;
+    let wrongScanPage = 1;
+    let completedHistoryPage = 1;
+
+    function clampActivityPage(page, totalPages) {
+      return Math.min(Math.max(Number(page) || 1, 1), Math.max(totalPages, 1));
+    }
+
+    function buildActivityPageList(currentPage, totalPages) {
+      if (totalPages <= 5) {
+        return Array.from({ length: totalPages }, (_, index) => index + 1);
+      }
+
+      if (currentPage <= 3) {
+        return [1, 2, 3, "ellipsis", totalPages];
+      }
+
+      if (currentPage >= totalPages - 2) {
+        return [1, "ellipsis", totalPages - 2, totalPages - 1, totalPages];
+      }
+
+      return [1, "ellipsis", currentPage - 1, currentPage, currentPage + 1, "ellipsis", totalPages];
+    }
+
+    function renderActivityPagination(targetName, totalItems, currentPage) {
+      const totalPages = Math.ceil(totalItems / ACTIVITY_PAGE_SIZE);
+      if (totalPages <= 1) {
+        return "";
+      }
+
+      const pages = buildActivityPageList(currentPage, totalPages);
+      return '<div class="activity-pagination">' + pages.map((page) => {
+        if (page === "ellipsis") {
+          return '<span class="activity-page-ellipsis">…</span>';
+        }
+
+        const activeClass = page === currentPage ? " active" : "";
+        return '<button class="activity-page-btn' + activeClass + '" type="button" data-page-target="' + targetName + '" data-page="' + page + '">' + page + '</button>';
+      }).join("") + '</div>';
+    }
+
+    function getActivityPageItems(items, page) {
+      const totalPages = Math.ceil(items.length / ACTIVITY_PAGE_SIZE);
+      const safePage = clampActivityPage(page, totalPages);
+      const startIndex = (safePage - 1) * ACTIVITY_PAGE_SIZE;
+      return {
+        page: safePage,
+        totalPages,
+        startIndex,
+        endIndex: Math.min(startIndex + ACTIVITY_PAGE_SIZE, items.length),
+        pageItems: items.slice(startIndex, startIndex + ACTIVITY_PAGE_SIZE)
+      };
+    }
+
+    function renderActivityPageInfo(pageData, totalItems) {
+      if (totalItems === 0) {
+        return "";
+      }
+      return '<div class="activity-page-info">Showing ' + (pageData.startIndex + 1) + '–' + pageData.endIndex + ' of ' + totalItems + '</div>';
+    }
+
+    function handleActivityPaginationClick(event) {
+      const button = event.target.closest(".activity-page-btn");
+      if (!button) {
+        return;
+      }
+
+      const page = Number(button.dataset.page);
+      if (button.dataset.pageTarget === "wrong") {
+        wrongScanPage = page;
+        renderWrongScanLog();
+      }
+      if (button.dataset.pageTarget === "completed") {
+        completedHistoryPage = page;
+        renderCompletedHistory();
+      }
+    }
+
     function logCompletedPallet() {
       if (!scanState.activePalletId || scanState.completionLogged) {
         return;
@@ -3934,6 +4073,7 @@
         required: sumRequirementCounts()
       });
       state.completedHistory = state.completedHistory.slice(0, 100);
+      completedHistoryPage = 1;
       saveState();
       renderCompletedHistory();
     }
@@ -3944,15 +4084,21 @@
         return;
       }
 
-      completedHistory.innerHTML = state.completedHistory.map((item) => {
-        return `
-          <div class="list-item">
-            <strong class="mono">${escapeHtml(item.palletId)}</strong>
-            <div class="list-meta">${escapeHtml(item.timestamp)}</div>
-            <div class="list-meta">Mode: ${escapeHtml(item.mode)} | Progress: ${escapeHtml(item.completed)} / ${escapeHtml(item.required)}</div>
-          </div>
-        `;
-      }).join("");
+      const pageData = getActivityPageItems(state.completedHistory, completedHistoryPage);
+      completedHistoryPage = pageData.page;
+
+      completedHistory.innerHTML =
+        renderActivityPageInfo(pageData, state.completedHistory.length) +
+        pageData.pageItems.map((item) => {
+          return `
+            <div class="list-item">
+              <strong class="mono">${escapeHtml(item.palletId)}</strong>
+              <div class="list-meta">${escapeHtml(item.timestamp)}</div>
+              <div class="list-meta">Mode: ${escapeHtml(item.mode)} | Progress: ${escapeHtml(item.completed)} / ${escapeHtml(item.required)}</div>
+            </div>
+          `;
+        }).join("") +
+        renderActivityPagination("completed", state.completedHistory.length, completedHistoryPage);
     }
 
     function addWrongScan(type, value, details) {
@@ -3963,6 +4109,7 @@
         timestamp: nowTimestamp()
       });
       state.wrongScans = state.wrongScans.slice(0, 100);
+      wrongScanPage = 1;
       saveState();
       renderWrongScanLog();
     }
@@ -3974,15 +4121,21 @@
         return;
       }
 
-      wrongScanLog.innerHTML = state.wrongScans.map((item) => {
-        return `
-          <div class="list-item">
-            <strong class="mono">${escapeHtml(item.value)}</strong>
-            <div class="list-meta">${escapeHtml(item.timestamp)}</div>
-            <div class="list-meta">${escapeHtml(item.type)} | ${escapeHtml(item.details)}</div>
-          </div>
-        `;
-      }).join("");
+      const pageData = getActivityPageItems(state.wrongScans, wrongScanPage);
+      wrongScanPage = pageData.page;
+
+      wrongScanLog.innerHTML =
+        renderActivityPageInfo(pageData, state.wrongScans.length) +
+        pageData.pageItems.map((item) => {
+          return `
+            <div class="list-item">
+              <strong class="mono">${escapeHtml(item.value)}</strong>
+              <div class="list-meta">${escapeHtml(item.timestamp)}</div>
+              <div class="list-meta">${escapeHtml(item.type)} | ${escapeHtml(item.details)}</div>
+            </div>
+          `;
+        }).join("") +
+        renderActivityPagination("wrong", state.wrongScans.length, wrongScanPage);
     }
 
     function searchPalletFromWorkflowModal() {
@@ -4694,6 +4847,8 @@
       advancedToolsToggle.addEventListener("click", () => {
         toggleExclusiveAccordion(advancedTools);
       });
+      wrongScanLog.addEventListener("click", handleActivityPaginationClick);
+      completedHistory.addEventListener("click", handleActivityPaginationClick);
       revisitNotice.addEventListener("click", (event) => {
         const button = event.target.closest(".recheck-pallet-btn");
         if (!button) {
