@@ -2516,6 +2516,9 @@
       });
 
       skuScanInput.addEventListener("blur", () => {
+        if (state.manualScanEntry) {
+          return;
+        }
         if (state.scanLock && scanState.activePalletId) {
           queueFocusActiveInput();
         }
@@ -2573,7 +2576,7 @@
       if (workflowModal.classList.contains("active") || pendingPalletConfirmation || scanState.status === "completed") {
         return palletSearchInput;
       }
-      if (state.scanLock && scanState.activePalletId && skuScanInput) {
+      if (state.scanLock && scanState.activePalletId && skuScanInput && !state.manualScanEntry) {
         return skuScanInput;
       }
       return palletSearchInput;
