@@ -1,0 +1,11 @@
+{
+  "commit_message": "Fix side drawer JavaScript reference",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    const importTabBtn = document.getElementById(\"importTabBtn\");\n    const settingsTabBtn = document.getElementById(\"settingsTabBtn\");\n    const instructionsTabBtn = document.getElementById(\"instructionsTabBtn\");",
+      "new": "    const sideTabPanel = document.querySelector(\".side-tab-panel\");\n    const importTabBtn = document.getElementById(\"importTabBtn\");\n    const settingsTabBtn = document.getElementById(\"settingsTabBtn\");\n    const instructionsTabBtn = document.getElementById(\"instructionsTabBtn\");"
+    }
+  ]
+}
