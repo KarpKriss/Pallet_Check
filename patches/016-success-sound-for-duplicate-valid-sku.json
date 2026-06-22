@@ -1,0 +1,11 @@
+{
+  "commit_message": "Use success sound for duplicate valid SKU scans",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      if (current >= required) {\n        ensureScannerAcknowledgement(\"This item is already fully scanned: \" + resolvedSku, \"warn\");\n        beep(\"error\");\n        skuScanInput.select();\n        queueFocusActiveInput();\n        return;\n      }",
+      "new": "      if (current >= required) {\n        ensureScannerAcknowledgement(\"This item is already fully scanned, but it belongs to this pallet: \" + resolvedSku, \"warn\");\n        beep(\"success\");\n        skuScanInput.select();\n        queueFocusActiveInput();\n        return;\n      }"
+    }
+  ]
+}
