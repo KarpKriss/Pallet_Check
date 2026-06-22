@@ -1,0 +1,11 @@
+{
+  "commit_message": "Polish side drawer tab connection",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Polish connection between side drawer and vertical tabs */\n    .side-tab-panel .tabs,\n    body:not(.pallet-view-active) .side-tab-panel .tabs {\n      right: -52px !important;\n      gap: 14px !important;\n      overflow: visible !important;\n    }\n\n    .side-tab-panel .tab-btn,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn {\n      min-width: 56px !important;\n      min-height: 128px !important;\n      border-radius: 0 18px 18px 0 !important;\n      border-left: 0 !important;\n      border-right: 1px solid rgba(255, 255, 255, 0.14) !important;\n      margin-left: -1px !important;\n      position: relative !important;\n      overflow: visible !important;\n    }\n\n    .side-tab-panel .tab-btn::before,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn::before {\n      content: \"\";\n      position: absolute;\n      left: -8px;\n      top: 0;\n      bottom: 0;\n      width: 10px;\n      background: #102b48;\n      opacity: 0;\n      pointer-events: none;\n    }\n\n    .side-tab-panel .tab-btn.active::before,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active::before {\n      opacity: 1;\n    }\n\n    .side-tab-panel .tab-btn.active,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active {\n      transform: rotate(180deg) translateX(-4px) !important;\n      box-shadow: 12px -2px 28px rgba(8, 20, 34, 0.18) !important;\n    }\n\n    .side-tab-panel .tab-btn:not(.active):hover,\n    body:not(.pallet-view-active) .side-tab-panel .tab-btn:not(.active):hover {\n      transform: rotate(180deg) translateX(-2px) !important;\n    }\n"
+    }
+  ]
+}
