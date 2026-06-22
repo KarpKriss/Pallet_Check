@@ -1,0 +1,47 @@
+{
+  "commit_message": "Paginate wrong scan and completed history lists",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Paginated activity lists */\n    .accordion-body .list-box {\n      max-height: none !important;\n      overflow: visible !important;\n    }\n\n    .activity-page-info {\n      margin: 0 0 10px;\n      text-align: center;\n      color: #718196;\n      font-size: 12px;\n      font-weight: 650;\n    }\n\n    .activity-pagination {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      gap: 6px;\n      flex-wrap: wrap;\n      margin-top: 14px;\n      padding-top: 12px;\n      border-top: 1px solid #edf2f7;\n    }\n\n    .activity-page-btn {\n      min-width: 34px;\n      height: 34px;\n      padding: 0 10px;\n      border-radius: 999px;\n      border: 1px solid #d7e1ec;\n      background: #ffffff;\n      color: #42566c;\n      font-size: 12.5px;\n      font-weight: 760;\n      box-shadow: none;\n    }\n\n    .activity-page-btn:hover {\n      transform: none;\n      background: #eef6ff;\n      border-color: rgba(11, 92, 171, 0.24);\n      color: #0b5cab;\n    }\n\n    .activity-page-btn.active {\n      background: #0b5cab;\n      border-color: #0b5cab;\n      color: #ffffff;\n    }\n\n    .activity-page-ellipsis {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      min-width: 26px;\n      height: 34px;\n      color: #8a98a8;\n      font-weight: 800;\n    }\n"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function logCompletedPallet() {",
+      "insert": "    const ACTIVITY_PAGE_SIZE = 20;\n    let wrongScanPage = 1;\n    let completedHistoryPage = 1;\n\n    function clampActivityPage(page, totalPages) {\n      return Math.min(Math.max(Number(page) || 1, 1), Math.max(totalPages, 1));\n    }\n\n    function buildActivityPageList(currentPage, totalPages) {\n      if (totalPages <= 5) {\n        return Array.from({ length: totalPages }, (_, index) => index + 1);\n      }\n\n      if (currentPage <= 3) {\n        return [1, 2, 3, \"ellipsis\", totalPages];\n      }\n\n      if (currentPage >= totalPages - 2) {\n        return [1, \"ellipsis\", totalPages - 2, totalPages - 1, totalPages];\n      }\n\n      return [1, \"ellipsis\", currentPage - 1, currentPage, currentPage + 1, \"ellipsis\", totalPages];\n    }\n\n    function renderActivityPagination(targetName, totalItems, currentPage) {\n      const totalPages = Math.ceil(totalItems / ACTIVITY_PAGE_SIZE);\n      if (totalPages <= 1) {\n        return \"\";\n      }\n\n      const pages = buildActivityPageList(currentPage, totalPages);\n      return '<div class=\"activity-pagination\">' + pages.map((page) => {\n        if (page === \"ellipsis\") {\n          return '<span class=\"activity-page-ellipsis\">…</span>';\n        }\n\n        const activeClass = page === currentPage ? \" active\" : \"\";\n        return '<button class=\"activity-page-btn' + activeClass + '\" type=\"button\" data-page-target=\"' + targetName + '\" data-page=\"' + page + '\">' + page + '</button>';\n      }).join(\"\") + '</div>';\n    }\n\n    function getActivityPageItems(items, page) {\n      const totalPages = Math.ceil(items.length / ACTIVITY_PAGE_SIZE);\n      const safePage = clampActivityPage(page, totalPages);\n      const startIndex = (safePage - 1) * ACTIVITY_PAGE_SIZE;\n      return {\n        page: safePage,\n        totalPages,\n        startIndex,\n        endIndex: Math.min(startIndex + ACTIVITY_PAGE_SIZE, items.length),\n        pageItems: items.slice(startIndex, startIndex + ACTIVITY_PAGE_SIZE)\n      };\n    }\n\n    function renderActivityPageInfo(pageData, totalItems) {\n      if (totalItems === 0) {\n        return \"\";\n      }\n      return '<div class=\"activity-page-info\">Showing ' + (pageData.startIndex + 1) + '–' + pageData.endIndex + ' of ' + totalItems + '</div>';\n    }\n\n    function handleActivityPaginationClick(event) {\n      const button = event.target.closest(\".activity-page-btn\");\n      if (!button) {\n        return;\n      }\n\n      const page = Number(button.dataset.page);\n      if (button.dataset.pageTarget === \"wrong\") {\n        wrongScanPage = page;\n        renderWrongScanLog();\n      }\n      if (button.dataset.pageTarget === \"completed\") {\n        completedHistoryPage = page;\n        renderCompletedHistory();\n      }\n    }\n\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      state.completedHistory = state.completedHistory.slice(0, 100);\n      saveState();\n      renderCompletedHistory();",
+      "new": "      state.completedHistory = state.completedHistory.slice(0, 100);\n      completedHistoryPage = 1;\n      saveState();\n      renderCompletedHistory();"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function renderCompletedHistory() {\n      if (state.completedHistory.length === 0) {\n        completedHistory.innerHTML = '<div class=\"empty-lite\">No pallets completed yet.</div>';\n        return;\n      }\n\n      completedHistory.innerHTML = state.completedHistory.map((item) => {\n        return `\n          <div class=\"list-item\">\n            <strong class=\"mono\">${escapeHtml(item.palletId)}</strong>\n            <div class=\"list-meta\">${escapeHtml(item.timestamp)}</div>\n            <div class=\"list-meta\">Mode: ${escapeHtml(item.mode)} | Progress: ${escapeHtml(item.completed)} / ${escapeHtml(item.required)}</div>\n          </div>\n        `;\n      }).join(\"\");\n    }",
+      "new": "    function renderCompletedHistory() {\n      if (state.completedHistory.length === 0) {\n        completedHistory.innerHTML = '<div class=\"empty-lite\">No pallets completed yet.</div>';\n        return;\n      }\n\n      const pageData = getActivityPageItems(state.completedHistory, completedHistoryPage);\n      completedHistoryPage = pageData.page;\n\n      completedHistory.innerHTML =\n        renderActivityPageInfo(pageData, state.completedHistory.length) +\n        pageData.pageItems.map((item) => {\n          return `\n            <div class=\"list-item\">\n              <strong class=\"mono\">${escapeHtml(item.palletId)}</strong>\n              <div class=\"list-meta\">${escapeHtml(item.timestamp)}</div>\n              <div class=\"list-meta\">Mode: ${escapeHtml(item.mode)} | Progress: ${escapeHtml(item.completed)} / ${escapeHtml(item.required)}</div>\n            </div>\n          `;\n        }).join(\"\") +\n        renderActivityPagination(\"completed\", state.completedHistory.length, completedHistoryPage);\n    }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      state.wrongScans = state.wrongScans.slice(0, 100);\n      saveState();\n      renderWrongScanLog();",
+      "new": "      state.wrongScans = state.wrongScans.slice(0, 100);\n      wrongScanPage = 1;\n      saveState();\n      renderWrongScanLog();"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function renderWrongScanLog() {\n      renderWrongScanSummary();\n      if (state.wrongScans.length === 0) {\n        wrongScanLog.innerHTML = '<div class=\"empty-lite\">No wrong scans yet.</div>';\n        return;\n      }\n\n      wrongScanLog.innerHTML = state.wrongScans.map((item) => {\n        return `\n          <div class=\"list-item\">\n            <strong class=\"mono\">${escapeHtml(item.value)}</strong>\n            <div class=\"list-meta\">${escapeHtml(item.timestamp)}</div>\n            <div class=\"list-meta\">${escapeHtml(item.type)} | ${escapeHtml(item.details)}</div>\n          </div>\n        `;\n      }).join(\"\");\n    }",
+      "new": "    function renderWrongScanLog() {\n      renderWrongScanSummary();\n      if (state.wrongScans.length === 0) {\n        wrongScanLog.innerHTML = '<div class=\"empty-lite\">No wrong scans yet.</div>';\n        return;\n      }\n\n      const pageData = getActivityPageItems(state.wrongScans, wrongScanPage);\n      wrongScanPage = pageData.page;\n\n      wrongScanLog.innerHTML =\n        renderActivityPageInfo(pageData, state.wrongScans.length) +\n        pageData.pageItems.map((item) => {\n          return `\n            <div class=\"list-item\">\n              <strong class=\"mono\">${escapeHtml(item.value)}</strong>\n              <div class=\"list-meta\">${escapeHtml(item.timestamp)}</div>\n              <div class=\"list-meta\">${escapeHtml(item.type)} | ${escapeHtml(item.details)}</div>\n            </div>\n          `;\n        }).join(\"\") +\n        renderActivityPagination(\"wrong\", state.wrongScans.length, wrongScanPage);\n    }"
+    },
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "      revisitNotice.addEventListener(\"click\", (event) => {",
+      "insert": "      wrongScanLog.addEventListener(\"click\", handleActivityPaginationClick);\n      completedHistory.addEventListener(\"click\", handleActivityPaginationClick);\n"
+    }
+  ]
+}
