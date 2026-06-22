@@ -1,0 +1,11 @@
+{
+  "commit_message": "Stabilize lower tab content position",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Stable lower utility tabs: fixed button row, shared content area below */\n    .stacked-panels {\n      display: grid !important;\n      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;\n      grid-template-rows: auto auto !important;\n      align-items: start !important;\n      justify-items: center !important;\n      column-gap: 28px !important;\n      row-gap: 18px !important;\n    }\n\n    .stacked-panels > .accordion {\n      display: contents !important;\n    }\n\n    #wrongScanToggle {\n      grid-column: 1 !important;\n      grid-row: 1 !important;\n    }\n\n    #completedHistoryToggle {\n      grid-column: 2 !important;\n      grid-row: 1 !important;\n    }\n\n    #advancedToolsToggle {\n      grid-column: 3 !important;\n      grid-row: 1 !important;\n    }\n\n    .stacked-panels .accordion-toggle {\n      align-self: start !important;\n    }\n\n    .stacked-panels .accordion-body {\n      grid-column: 1 / -1 !important;\n      grid-row: 2 !important;\n      width: min(980px, 100%) !important;\n      justify-self: center !important;\n      margin-top: 0 !important;\n    }\n\n    .stacked-panels .accordion:not(.open) .accordion-body {\n      display: none !important;\n    }\n\n    .stacked-panels .accordion.open .accordion-body {\n      display: block !important;\n    }\n\n    @media (max-width: 760px) {\n      .stacked-panels {\n        grid-template-columns: 1fr !important;\n        grid-template-rows: none !important;\n        row-gap: 8px !important;\n      }\n\n      #wrongScanToggle,\n      #completedHistoryToggle,\n      #advancedToolsToggle,\n      .stacked-panels .accordion-body {\n        grid-column: 1 !important;\n        grid-row: auto !important;\n        width: 100% !important;\n      }\n    }\n"
+    }
+  ]
+}
