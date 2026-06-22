@@ -1,0 +1,17 @@
+{
+  "commit_message": "Remove inactive tab hover animation",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    .tab-btn.active {\n      background: var(--accent);\n      color: white;\n      box-shadow: 0 10px 22px rgba(11, 92, 171, 0.22);\n      transform: rotate(180deg) translateX(-8px);\n    }\n",
+      "new": "    .tab-btn.active {\n      background: var(--accent);\n      color: white;\n      box-shadow: 0 10px 22px rgba(11, 92, 171, 0.22);\n      transform: rotate(180deg) translateX(-8px);\n    }\n\n    .tab-btn:not(.active):hover {\n      transform: rotate(180deg);\n    }\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      .tab-btn.active {\n        transform: none;\n        box-shadow: 0 6px 14px rgba(11, 92, 171, 0.2);\n      }\n",
+      "new": "      .tab-btn:hover,\n      .tab-btn:not(.active):hover {\n        transform: none;\n      }\n\n      .tab-btn.active {\n        transform: none;\n        box-shadow: 0 6px 14px rgba(11, 92, 171, 0.2);\n      }\n"
+    }
+  ]
+}
