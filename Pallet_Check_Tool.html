@@ -1569,6 +1569,7 @@
     let scanAutoSubmitTimer = null;
     let palletAutoSubmitTimer = null;
     let pendingPalletConfirmation = "";
+    let drawerCloseTimer = null;
 
     const state = structuredClone(DEFAULT_STATE);
     const lookupMaps = { eanToSku: {}, skuToEan: {}, skuToShortEan: {} };
@@ -1788,21 +1789,39 @@
       soundToggle.checked = state.soundEnabled;
     }
 
+    function clearDrawerActiveState() {
+      importTabBtn.classList.remove("active");
+      settingsTabBtn.classList.remove("active");
+      instructionsTabBtn.classList.remove("active");
+      importTab.classList.remove("active");
+      settingsTab.classList.remove("active");
+      instructionsTab.classList.remove("active");
+    }
+
     function switchTab(tabName) {
+      clearTimeout(drawerCloseTimer);
+
       const sameOpenTab =
         sideTabPanel.classList.contains("drawer-open") &&
         ((tabName === "import" && importTab.classList.contains("active")) ||
           (tabName === "settings" && settingsTab.classList.contains("active")) ||
           (tabName === "instructions" && instructionsTab.classList.contains("active")));
 
-      const nextTabName = sameOpenTab ? "" : tabName;
+      const nextTabName = sameOpenTab || !tabName ? "" : tabName;
       const showImport = nextTabName === "import";
       const showSettings = nextTabName === "settings";
       const showInstructions = nextTabName === "instructions";
       const drawerOpen = showImport || showSettings || showInstructions;
 
-      sideTabPanel.classList.toggle("drawer-open", drawerOpen);
-      document.body.classList.toggle("drawer-active", drawerOpen);
+      if (!drawerOpen) {
+        sideTabPanel.classList.remove("drawer-open");
+        document.body.classList.remove("drawer-active");
+        drawerCloseTimer = setTimeout(clearDrawerActiveState, 300);
+        return;
+      }
+
+      sideTabPanel.classList.add("drawer-open");
+      document.body.classList.add("drawer-active");
       importTabBtn.classList.toggle("active", showImport);
       settingsTabBtn.classList.toggle("active", showSettings);
       instructionsTabBtn.classList.toggle("active", showInstructions);
