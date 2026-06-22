@@ -3468,6 +3468,20 @@
       reader.readAsText(file, "utf-8");
     }
 
+    function toggleExclusiveAccordion(targetSection) {
+      const sections = [wrongScanSection, completedHistorySection, advancedTools];
+      const shouldOpen = !targetSection.classList.contains("open");
+
+      sections.forEach((section) => {
+        const isTarget = section === targetSection;
+        section.classList.toggle("open", isTarget && shouldOpen);
+        const toggle = section.querySelector(".accordion-toggle");
+        if (toggle) {
+          toggle.setAttribute("aria-expanded", String(isTarget && shouldOpen));
+        }
+      });
+    }
+
     function bindEvents() {
       addBatchBtn.addEventListener("click", addPastedBatch);
       clearPasteBtn.addEventListener("click", () => { pasteInput.value = ""; });
@@ -3498,13 +3512,13 @@
       reloadEanBtn.addEventListener("click", reloadEanDatabase);
       eanFileInput.addEventListener("change", handleEanFileSelected);
       wrongScanToggle.addEventListener("click", () => {
-        wrongScanSection.classList.toggle("open");
+        toggleExclusiveAccordion(wrongScanSection);
       });
       completedHistoryToggle.addEventListener("click", () => {
-        completedHistorySection.classList.toggle("open");
+        toggleExclusiveAccordion(completedHistorySection);
       });
       advancedToolsToggle.addEventListener("click", () => {
-        advancedTools.classList.toggle("open");
+        toggleExclusiveAccordion(advancedTools);
       });
       revisitNotice.addEventListener("click", (event) => {
         const button = event.target.closest(".recheck-pallet-btn");
