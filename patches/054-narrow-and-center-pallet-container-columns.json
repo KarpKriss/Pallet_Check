@@ -1,0 +1,11 @@
+{
+  "commit_message": "Narrow and center pallet and container columns",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Narrow and center Pallet ID / Container ID columns */\n    body.pallet-view-active table th:nth-child(4),\n    body.pallet-view-active table td:nth-child(4),\n    body.pallet-view-active table th:nth-child(5),\n    body.pallet-view-active table td:nth-child(5) {\n      width: 12% !important;\n      text-align: center !important;\n    }\n\n    body.pallet-view-active table th:nth-child(4),\n    body.pallet-view-active table th:nth-child(5) {\n      text-align: center !important;\n    }\n\n    body.pallet-view-active table td:nth-child(4),\n    body.pallet-view-active table td:nth-child(5) {\n      white-space: nowrap !important;\n      overflow: hidden !important;\n      text-overflow: ellipsis !important;\n    }\n"
+    }
+  ]
+}
