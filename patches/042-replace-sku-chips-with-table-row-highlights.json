@@ -1,0 +1,53 @@
+{
+  "commit_message": "Replace SKU chips with table row highlights",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Use table rows as the scan checklist instead of SKU chips */\n    #skuChipList,\n    .sku-chip-list {\n      display: none !important;\n    }\n\n    #resultsBody tr.scan-row-progress td {\n      background: #f1f7ff;\n    }\n\n    #resultsBody tr.scan-row-latest td {\n      background: #e6f2ff !important;\n      box-shadow: inset 4px 0 0 var(--accent);\n    }\n\n    #resultsBody tr.scan-row-done td {\n      background: #ecf8f1;\n    }\n\n    #resultsBody tr.scan-row-done.scan-row-latest td {\n      background: #e4f5ec !important;\n      box-shadow: inset 4px 0 0 var(--success-ink);\n    }\n\n    .row-scan-progress {\n      display: block;\n      margin-top: 3px;\n      font-size: 11px;\n      line-height: 1.2;\n      color: #708196;\n      font-weight: 650;\n    }\n\n    tr.scan-row-done .row-scan-progress {\n      color: var(--success-ink);\n    }\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      completionLogged: false,\n      status: \"not-started\"\n    };",
+      "new": "      completionLogged: false,\n      status: \"not-started\",\n      lastScannedSku: \"\"\n    };"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      scanState.scannedCounts = new Map();\n      scanState.completionLogged = false;\n      scanState.status = \"not-started\";\n    }",
+      "new": "      scanState.scannedCounts = new Map();\n      scanState.completionLogged = false;\n      scanState.status = \"not-started\";\n      scanState.lastScannedSku = \"\";\n    }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        scanState.scannedCounts = new Map();\n        scanState.completionLogged = false;\n        updateScanStatus();",
+      "new": "        scanState.scannedCounts = new Map();\n        scanState.completionLogged = false;\n        scanState.lastScannedSku = \"\";\n        updateScanStatus();"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "    function renderRowTable(rows) {\n      resultsBody.innerHTML = rows.map((row) => {\n        const ean = getSkuDisplayEan(row.sku);\n        return (\n          \"<tr>\" +\n            '<td class=\"mono\">' + escapeHtml(row.sku || \"-\") + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(ean) + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(row.qty || \"-\") + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(row.palletId || \"-\") + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(row.containerId || \"-\") + \"</td>\" +\n          \"</tr>\"\n        );\n      }).join(\"\");\n    }",
+      "new": "    function renderRowTable(rows) {\n      resultsBody.innerHTML = rows.map((row) => {\n        const ean = getSkuDisplayEan(row.sku);\n        const required = scanState.requirements.get(row.sku) || 0;\n        const scanned = scanState.scannedCounts.get(row.sku) || 0;\n        const hasProgress = Boolean(scanState.activePalletId && required > 0);\n        const cappedScanned = Math.min(scanned, required);\n        const rowClasses = [];\n\n        if (hasProgress && cappedScanned > 0) {\n          rowClasses.push(\"scan-row-progress\");\n        }\n        if (hasProgress && cappedScanned >= required) {\n          rowClasses.push(\"scan-row-done\");\n        }\n        if (hasProgress && scanState.lastScannedSku === row.sku) {\n          rowClasses.push(\"scan-row-latest\");\n        }\n\n        const progressText = hasProgress\n          ? '<span class=\"row-scan-progress\">' + cappedScanned + ' / ' + required + ' scanned</span>'\n          : \"\";\n\n        return (\n          '<tr class=\"' + rowClasses.join(\" \") + '\">' +\n            '<td class=\"mono\">' + escapeHtml(row.sku || \"-\") + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(ean) + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(row.qty || \"-\") + progressText + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(row.palletId || \"-\") + \"</td>\" +\n            '<td class=\"mono\">' + escapeHtml(row.containerId || \"-\") + \"</td>\" +\n          \"</tr>\"\n        );\n      }).join(\"\");\n    }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "        skuChipList.innerHTML = \"\";\n        return;",
+      "new": "        skuChipList.innerHTML = \"\";\n        if (currentView.rows.length > 0) {\n          renderRowTable(currentView.rows);\n        }\n        return;"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      skuChipList.innerHTML = [...scanState.requirements.entries()].map(([sku, required]) => {\n        const scanned = scanState.scannedCounts.get(sku) || 0;\n        const doneClass = scanned >= required ? \" done\" : \"\";\n        const ean = getSkuDisplayEan(sku);\n        return '<div class=\"sku-chip' + doneClass + ' mono\">' +\n          escapeHtml(sku) +\n          '<span class=\"sub\">EAN: ' + escapeHtml(ean) + ' | ' + scanned + \" / \" + required + \"</span>\" +\n          \"</div>\";\n      }).join(\"\");",
+      "new": "      skuChipList.innerHTML = \"\";\n      if (currentView.rows.length > 0) {\n        renderRowTable(currentView.rows);\n      }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      scanState.scannedCounts.set(resolvedSku, current + 1);\n      if (pendingPalletConfirmation) {",
+      "new": "      scanState.scannedCounts.set(resolvedSku, current + 1);\n      scanState.lastScannedSku = resolvedSku;\n      if (pendingPalletConfirmation) {"
+    }
+  ]
+}
