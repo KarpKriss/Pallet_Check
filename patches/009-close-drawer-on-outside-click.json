@@ -1,0 +1,11 @@
+{
+  "commit_message": "Close drawer when clicking outside",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      document.addEventListener(\"pointerdown\", () => {\n        if (workflowModal.classList.contains(\"active\")) {\n          hideWorkflowModal();\n        }\n      });",
+      "new": "      document.addEventListener(\"pointerdown\", (event) => {\n        if (workflowModal.classList.contains(\"active\")) {\n          hideWorkflowModal();\n        }\n\n        if (sideTabPanel.classList.contains(\"drawer-open\") && !sideTabPanel.contains(event.target)) {\n          switchTab(\"\");\n        }\n      });"
+    }
+  ]
+}
