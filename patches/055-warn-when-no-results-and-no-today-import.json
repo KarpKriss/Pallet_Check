@@ -1,0 +1,29 @@
+{
+  "commit_message": "Warn when no pallet results and no today import",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      soundEnabled: true,\n      customEanMap: null\n    };",
+      "new": "      soundEnabled: true,\n      customEanMap: null,\n      lastImportDate: \"\"\n    };"
+    },
+    {
+      "type": "insert_after",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "    function nowTimestamp() {\n      return new Date().toLocaleString(\"en-GB\", {\n        year: \"numeric\",\n        month: \"2-digit\",\n        day: \"2-digit\",\n        hour: \"2-digit\",\n        minute: \"2-digit\",\n        second: \"2-digit\"\n      });\n    }",
+      "insert": "\n\n    function todayKey() {\n      const now = new Date();\n      const year = now.getFullYear();\n      const month = String(now.getMonth() + 1).padStart(2, \"0\");\n      const day = String(now.getDate()).padStart(2, \"0\");\n      return year + \"-\" + month + \"-\" + day;\n    }\n\n    function hasImportedToday() {\n      return state.lastImportDate === todayKey();\n    }"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      state.rows.push(...uniqueRows);\n      state.batchCount += 1;\n      saveState();",
+      "new": "      state.rows.push(...uniqueRows);\n      state.batchCount += 1;\n      state.lastImportDate = todayKey();\n      saveState();"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "      addWrongScan(\"unknown\", query, \"No pallet or container match.\");\n      beep(\"error\");\n      renderResults([], query, {\n        emptyMeta: 'No results found for pallet ID: \"' + query + '\".',\n        emptyBody: \"This code was not found in pallet ID or container ID.\"\n      });\n      setStatus(\"The scanned code was not found in pallet ID or container ID.\", \"error\");",
+      "new": "      if (!hasImportedToday()) {\n        renderResults([], query, {\n          emptyTitle: \"Today's data not imported\",\n          emptyMeta: 'No results found for pallet ID: \"' + query + '\".',\n          emptyBody: \"It looks like you have not imported today's data yet. Import a new batch first to get more pallet results.\"\n        });\n        setStatus(\"It looks like you have not imported today's data yet. Import a new batch first to get more results.\", \"warn\");\n        queueFocusActiveInput();\n        return;\n      }\n\n      addWrongScan(\"unknown\", query, \"No pallet or container match.\");\n      beep(\"error\");\n      renderResults([], query, {\n        emptyMeta: 'No results found for pallet ID: \"' + query + '\".',\n        emptyBody: \"This code was not found in pallet ID or container ID.\"\n      });\n      setStatus(\"The scanned code was not found in pallet ID or container ID.\", \"error\");"
+    }
+  ]
+}
