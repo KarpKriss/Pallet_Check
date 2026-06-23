@@ -1,0 +1,17 @@
+{
+  "commit_message": "Correct documentation author and contact",
+  "operations": [
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "Author: Krzysztof Machalica | Scope: standalone Pallet_Check_Tool.html | Audience: maintainers, process owners and technically capable users responsible for controlled changes.",
+      "new": "Author: Krzysztof Pardej | Contact: krzysztof.pardej@cevalogistics.com | Scope: standalone Pallet_Check_Tool.html | Audience: maintainers, process owners and technically capable users responsible for controlled changes."
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "Author: Krzysztof Machalica. Generated from Pallet_Check_Tool.html. This documentation is embedded in the standalone tool file.",
+      "new": "Author: Krzysztof Pardej | Contact: krzysztof.pardej@cevalogistics.com. Generated from Pallet_Check_Tool.html. This documentation is embedded in the standalone tool file."
+    }
+  ]
+}
