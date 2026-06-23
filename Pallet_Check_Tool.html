@@ -3361,7 +3361,7 @@
 
             <div class="doc-download-card">
               <strong>Developer documentation</strong>
-              <div class="footnote">Reference for maintainers: file structure, import parsing, scan workflow, local storage, EAN mapping and safe change points. The PDF is generated from this HTML file.</div>
+              <div class="footnote">Reference for maintainers: file structure, import parsing, scan workflow, local storage, EAN mapping and safe change points. Opens a printable PDF view generated from this HTML file.</div>
               <a class="doc-download-link" href="data:text/markdown;charset=utf-8,%23%20Pallet%20Check%20Tool%20-%20Technical%20Documentation%0A%0AThis%20documentation%20is%20embedded%20directly%20in%20the%20HTML%20file.%20It%20works%20even%20when%20the%20user%20shares%20only%20Pallet_Check_Tool.html%2C%20without%20the%20docs%20folder.%0A%0A%23%23%201.%20Purpose%0APallet%20Check%20Tool%20is%20a%20single-file%20HTML%20application%20for%20checking%20pallet%20content.%20The%20user%20imports%20system%20data%2C%20scans%20or%20types%20a%20Pallet%20ID%2C%20and%20then%20scans%20SKU%20or%20EAN%20codes.%20The%20tool%20verifies%20whether%20the%20scanned%20code%20belongs%20to%20the%20active%20pallet%2C%20tracks%20progress%2C%20highlights%20scanned%20rows%2C%20logs%20wrong%20scans%20and%20stores%20the%20work%20locally%20in%20the%20browser.%0A%0A%23%23%202.%20Main%20areas%20of%20the%20HTML%0AThe%20file%20contains%20HTML%20structure%2C%20CSS%20styles%2C%20JavaScript%20logic%20and%20the%20built-in%20EAN%20to%20SKU%20map.%20Use%20Ctrl%2BF%20when%20editing.%20Useful%20search%20terms%20are%20DEFAULT_STATE%2C%20parseRawData%2C%20appendBatch%2C%20searchPallet%2C%20renderResults%2C%20renderRowTable%2C%20startScanWorkflow%2C%20handleSkuScan%2C%20addWrongScan%2C%20renderCompletedHistory%20and%20bindEvents.%0A%0A%23%23%203.%20State%20and%20settings%0ASearch%20for%20STORAGE_KEY%2C%20DEFAULT_MAPPING%20and%20DEFAULT_STATE.%20STORAGE_KEY%20controls%20browser%20localStorage.%20DEFAULT_MAPPING%20defines%20default%20source%20columns%3A%20qty%2C%20sku%2C%20pallet%20and%20container.%20These%20are%201-based%20column%20numbers.%20DEFAULT_STATE%20defines%20loaded%20rows%2C%20batch%20count%2C%20wrong%20scans%2C%20completed%20history%2C%20scan%20mode%2C%20manual%20modes%2C%20sounds%2C%20EAN%20map%20and%20last%20import%20date.%0A%0A%23%23%204.%20Data%20import%0ASearch%20for%20parseRawData%28rawText%29%2C%20appendBatch%28rows%2C%20sourceLabel%29%20and%20buildRowKey%28row%29.%20parseRawData%20converts%20pasted%20tab-separated%20system%20data%20into%20rows%20with%20sku%2C%20qty%2C%20palletId%20and%20containerId.%20appendBatch%20adds%20unique%20rows%20into%20state.rows%2C%20increases%20batchCount%2C%20stores%20lastImportDate%20and%20saves%20to%20localStorage.%20buildRowKey%20controls%20duplicate%20detection.%0A%0A%23%23%205.%20Pallet%20search%0ASearch%20for%20searchPallet%28%29.%20This%20function%20reads%20the%20Pallet%20ID%20input%2C%20checks%20if%20data%20exists%2C%20handles%20unfinished%20pallets%2C%20supports%20suffix%20search%20like%20%2A1234%2C%20searches%20Pallet%20ID%2C%20checks%20Container%20ID%20matches%2C%20renders%20results%20and%20handles%20no-result%20cases.%20The%20daily%20import%20warning%20uses%20todayKey%28%29%20and%20hasImportedToday%28%29.%0A%0A%23%23%206.%20Results%20table%0ASearch%20for%20renderResults%28%29%2C%20renderCurrentMeta%28%29%20and%20renderRowTable%28%29.%20renderResults%20controls%20the%20result%20area.%20renderCurrentMeta%20calculates%20record%20count%2C%20total%20quantity%20and%20container%20count.%20renderRowTable%20builds%20rows%20for%20SKU%2C%20EAN%2C%20quantity%2C%20Pallet%20ID%20and%20Container%20ID.%20If%20columns%20change%2C%20update%20both%20the%20table%20header%20and%20renderRowTable.%20Also%20check%20CSS%20nth-child%20selectors.%0A%0A%23%23%207.%20Scanning%20workflow%0ASearch%20for%20startScanWorkflow%28%29%2C%20handleSkuScan%28%29%2C%20updateScanStatus%28%29%2C%20evaluatePalletStatus%28%29%2C%20sumRequirementCounts%28%29%20and%20sumScannedCounts%28%29.%20startScanWorkflow%20creates%20scan%20requirements%20for%20the%20active%20pallet.%20handleSkuScan%20resolves%20EAN%20to%20SKU%2C%20checks%20whether%20it%20belongs%20to%20the%20active%20pallet%2C%20updates%20counts%2C%20plays%20sound%20and%20refreshes%20progress.%0A%0A%23%23%208.%20Completion%20modes%0AThe%20tool%20supports%20Complete%20by%20SKU%20and%20Complete%20by%20Quantity.%20In%20SKU%20mode%2C%20each%20unique%20SKU%20is%20required%20once.%20In%20Quantity%20mode%2C%20the%20required%20scan%20count%20follows%20quantity.%20To%20add%20a%20new%20mode%2C%20update%20the%20select%20in%20Advanced%20Tools%2C%20DEFAULT_STATE%2C%20startScanWorkflow%2C%20updateScanInstructionAndProgress%20and%20evaluatePalletStatus.%0A%0A%23%23%209.%20EAN%20to%20SKU%0ASearch%20for%20rebuildEanMaps%28%29%2C%20resolveSkuOrEan%28%29%2C%20stripEanPrefix%28%29%2C%20parseEanCsv%28%29%20and%20reloadEanDatabase%28%29.%20The%20built-in%20map%20is%20window.EAN_SKU_MAP.%20Custom%20EAN%20CSV%20can%20be%20stored%20in%20state.customEanMap.%20resolveSkuOrEan%20tries%20full%20EAN%2C%20shortened%20EAN%20and%20raw%20SKU.%0A%0A%23%23%2010.%20Wrong%20Scan%20Log%0ASearch%20for%20addWrongScan%28%29%2C%20renderWrongScanLog%28%29%20and%20renderWrongScanSummary%28%29.%20Wrong%20scans%20are%20stored%20in%20state.wrongScans%20and%20limited%20with%20slice%280%2C%20100%29.%20Pagination%20uses%20ACTIVITY_PAGE_SIZE.%0A%0A%23%23%2011.%20Completed%20Pallets%20History%0ASearch%20for%20logCompletedPallet%28%29%2C%20renderCompletedHistory%28%29%20and%20exportCompletedHistoryCsv%28%29.%20Completed%20pallets%20are%20stored%20in%20state.completedHistory%20and%20limited%20with%20slice%280%2C%20100%29.%20The%20history%20view%20is%20paginated%20using%20ACTIVITY_PAGE_SIZE.%0A%0A%23%23%2012.%20UI%20and%20CSS%0AThe%20CSS%20is%20in%20the%20style%20block.%20Important%20selectors%3A%20side-tab-panel%20for%20top%20tabs%2C%20doc-download-card%20for%20the%20documentation%20card%2C%20search-card%20for%20the%20main%20area%2C%20scan-panel%20for%20SKU%20scanning%2C%20table-wrap%20for%20the%20result%20table%2C%20meta-grid%20and%20meta-card%20for%20right-side%20statistics%2C%20stacked-panels%20for%20lower%20utility%20buttons%2C%20workflow-modal%20for%20completion%20popup%20and%20activity-pagination%20for%20log%20pagination.%0A%0A%23%23%2013.%20Messages%20and%20warnings%0ASearch%20for%20setStatus%28%29%2C%20showWorkflowModal%28%29%2C%20ensureScannerAcknowledgement%28%29%20and%20updateDuplicateWarning%28%29.%20Common%20text%20searches%3A%20Pallet%20completed%20correctly%2C%20Before%20moving%20on%2C%20No%20results%20found%20for%20pallet%20ID%20and%20Today%27s%20data%20not%20imported.%0A%0A%23%23%2014.%20Sounds%20and%20focus%0ASearch%20for%20beep%28type%29%2C%20getActiveInput%28%29%2C%20queueFocusActiveInput%28%29%20and%20queueFocusSkuInput%28%29.%20The%20tool%20keeps%20scanner%20focus%20on%20the%20operational%20input.%20Manual%20modes%20reduce%20automatic%20focus%20behavior%20to%20allow%20typing%20and%20clicking.%0A%0A%23%23%2015.%20Exports%0ASearch%20for%20exportCsv%28%29%2C%20exportCurrentView%28%29%20and%20exportCompletedHistoryCsv%28%29.%20exportCsv%20is%20the%20base%20function.%20Add%20new%20exports%20by%20preparing%20rows%20and%20headers%2C%20then%20calling%20exportCsv.%0A%0A%23%23%2016.%20Technical%20documentation%20download%0AThis%20file%20is%20downloaded%20from%20a%20data%20URL%20embedded%20in%20the%20HTML.%20Do%20not%20replace%20it%20with%20a%20link%20to%20an%20external%20file%20if%20the%20tool%20must%20remain%20shareable%20as%20one%20standalone%20HTML%20file.%0A%0A%23%23%2017.%20Minimum%20test%20after%20changes%0ARefresh%20with%20Ctrl%2BF5.%20Clear%20All.%20Import%20a%20small%20batch.%20Search%20an%20existing%20pallet.%20Scan%20a%20valid%20SKU%20or%20EAN.%20Scan%20an%20invalid%20SKU%20or%20EAN.%20Check%20Wrong%20Scan%20Log.%20Complete%20the%20pallet.%20Check%20Completed%20Pallets%20History.%20Refresh%20again%20and%20confirm%20data%20is%20restored%20from%20localStorage.%20Share%20only%20the%20HTML%20and%20confirm%20this%20documentation%20download%20still%20works.%0A%0A%23%23%2018.%20Mental%20model%0AImport%20data%20-%3E%20state.rows.%20Search%20pallet%20-%3E%20currentView.rows.%20Start%20scan%20-%3E%20scanState.requirements.%20Scan%20SKU%20or%20EAN%20-%3E%20scanState.scannedCounts.%20Update%20status%20-%3E%20table%20highlight%20and%20progress.%20Complete%20pallet%20-%3E%20completedHistory.%20Wrong%20scan%20-%3E%20wrongScans.%20Save%20-%3E%20localStorage.%0A" download="Pallet_Check_Tool_Technical_Documentation.md">Download technical documentation</a>
             </div>
           </div>
@@ -3970,6 +3970,54 @@
       link.setAttribute("download", "Pallet_Check_Tool_Technical_Documentation.pdf");
       link.textContent = "Download PDF";
       link.addEventListener("click", downloadTechnicalPdf);
+    }
+
+    /* Reliable documentation PDF path: open a printable document view instead of raw PDF bytes */
+    function buildTechnicalDocumentationPrintHtml() {
+      const rows = technicalDocSections().map(([type, text]) => {
+        if (type === "title") return '<h1 class="doc-title">' + escapeHtml(text) + '</h1>';
+        if (type === "h1") return '<h2>' + escapeHtml(text) + '</h2>';
+        return '<p>' + escapeHtml(text) + '</p>';
+      }).join("");
+
+      return '<!doctype html><html><head><meta charset="utf-8"><title>Pallet Check Tool - Technical Documentation</title>' +
+        '<style>' +
+        '@page{size:A4;margin:18mm 18mm 16mm 18mm;}' +
+        'body{font-family:Arial,Helvetica,sans-serif;color:#162435;background:#fff;line-height:1.45;font-size:10.5pt;}' +
+        '.page{max-width:780px;margin:0 auto;}' +
+        '.eyebrow{font-size:8.5pt;letter-spacing:.08em;text-transform:uppercase;color:#5d7084;margin-bottom:8px;}' +
+        '.doc-title{font-size:24pt;line-height:1.12;margin:0 0 8px;color:#0b3157;}' +
+        '.subtitle{font-size:10pt;color:#5d7084;border-bottom:1px solid #d8e1ea;padding-bottom:16px;margin-bottom:18px;}' +
+        'h2{font-size:13.5pt;line-height:1.25;color:#0b5cab;margin:18px 0 6px;page-break-after:avoid;}' +
+        'p{margin:0 0 8px;}' +
+        '.footer{margin-top:22px;padding-top:10px;border-top:1px solid #d8e1ea;color:#6b7c8e;font-size:8.5pt;}' +
+        '@media print{.no-print{display:none!important;}body{font-size:10pt;}h2{break-after:avoid;}}' +
+        '</style></head><body><div class="page"><div class="eyebrow">Standalone HTML maintenance guide</div>' +
+        rows +
+        '<div class="footer">Generated from Pallet_Check_Tool.html. This documentation is embedded in the standalone tool file.</div>' +
+        '<script>setTimeout(function(){window.focus();window.print();},250);<\/script>' +
+        '</div></body></html>';
+    }
+
+    function downloadTechnicalPdf(event) {
+      if (event) event.preventDefault();
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        alert("Please allow pop-ups for this page to open the PDF print view.");
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(buildTechnicalDocumentationPrintHtml());
+      printWindow.document.close();
+    }
+
+    function configureTechnicalPdfDownload() {
+      const link = document.querySelector(".doc-download-card .doc-download-link");
+      if (!link) return;
+      link.setAttribute("href", "#");
+      link.removeAttribute("download");
+      link.textContent = "Download PDF";
+      link.onclick = downloadTechnicalPdf;
     }
 
     function stripEanPrefix(ean) {
