@@ -1,0 +1,35 @@
+{
+  "commit_message": "Make documentation card more understated",
+  "operations": [
+    {
+      "type": "insert_before",
+      "path": "Pallet_Check_Tool.html",
+      "anchor": "  </style>",
+      "insert": "\n    /* Understated developer documentation block */\n    .doc-download-card {\n      display: grid !important;\n      gap: 8px !important;\n      padding: 16px 18px !important;\n      border-radius: 18px !important;\n      border: 1px solid rgba(148, 163, 184, 0.20) !important;\n      background: rgba(15, 33, 56, 0.72) !important;\n      box-shadow: none !important;\n      color: #d7e2ee !important;\n    }\n\n    .doc-download-card strong {\n      color: #f4f8fc !important;\n      font-size: 15px !important;\n      letter-spacing: 0.01em !important;\n    }\n\n    .doc-download-card .footnote {\n      max-width: 440px !important;\n      color: #aebdca !important;\n      font-size: 13px !important;\n      line-height: 1.55 !important;\n    }\n\n    .doc-download-link {\n      width: fit-content !important;\n      min-height: 34px !important;\n      padding: 0 13px !important;\n      border-radius: 10px !important;\n      border: 1px solid rgba(99, 156, 216, 0.34) !important;\n      background: rgba(11, 92, 171, 0.20) !important;\n      color: #cfe7ff !important;\n      font-size: 12.5px !important;\n      font-weight: 760 !important;\n      box-shadow: none !important;\n      text-decoration: none !important;\n      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease !important;\n    }\n\n    .doc-download-link:hover {\n      background: rgba(11, 92, 171, 0.32) !important;\n      border-color: rgba(99, 156, 216, 0.56) !important;\n      color: #ffffff !important;\n      transform: translateY(-1px) !important;\n      box-shadow: none !important;\n    }\n\n    .doc-download-link:active {\n      transform: translateY(0) !important;\n    }\n"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "<strong>Technical documentation</strong>",
+      "new": "<strong>Developer documentation</strong>"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "For users who want to understand or safely edit this standalone HTML file. The documentation is generated as a professional PDF directly from the HTML, so it still works when the tool is shared as one file.",
+      "new": "Reference for maintainers: file structure, import parsing, scan workflow, local storage, EAN mapping and safe change points. The PDF is generated from this HTML file."
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "link.textContent = 'Download technical documentation (PDF)';",
+      "new": "link.textContent = 'Download PDF';"
+    },
+    {
+      "type": "replace",
+      "path": "Pallet_Check_Tool.html",
+      "old": "link.textContent = \"Download technical documentation (PDF)\";",
+      "new": "link.textContent = \"Download PDF\";"
+    }
+  ]
+}
