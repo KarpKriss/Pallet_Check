@@ -3361,7 +3361,7 @@
 
             <div class="doc-download-card">
               <strong>Developer documentation</strong>
-              <div class="footnote">Reference for maintainers: file structure, import parsing, scan workflow, local storage, EAN mapping and safe change points. Opens a printable PDF view generated from this HTML file.</div>
+              <div class="footnote">Reference for maintainers: file structure, import parsing, scan workflow, local storage, EAN mapping and safe change points. Opens a full maintenance guide generated from this HTML file. Use the document toolbar to print or save as PDF.</div>
               <a class="doc-download-link" href="data:text/markdown;charset=utf-8,%23%20Pallet%20Check%20Tool%20-%20Technical%20Documentation%0A%0AThis%20documentation%20is%20embedded%20directly%20in%20the%20HTML%20file.%20It%20works%20even%20when%20the%20user%20shares%20only%20Pallet_Check_Tool.html%2C%20without%20the%20docs%20folder.%0A%0A%23%23%201.%20Purpose%0APallet%20Check%20Tool%20is%20a%20single-file%20HTML%20application%20for%20checking%20pallet%20content.%20The%20user%20imports%20system%20data%2C%20scans%20or%20types%20a%20Pallet%20ID%2C%20and%20then%20scans%20SKU%20or%20EAN%20codes.%20The%20tool%20verifies%20whether%20the%20scanned%20code%20belongs%20to%20the%20active%20pallet%2C%20tracks%20progress%2C%20highlights%20scanned%20rows%2C%20logs%20wrong%20scans%20and%20stores%20the%20work%20locally%20in%20the%20browser.%0A%0A%23%23%202.%20Main%20areas%20of%20the%20HTML%0AThe%20file%20contains%20HTML%20structure%2C%20CSS%20styles%2C%20JavaScript%20logic%20and%20the%20built-in%20EAN%20to%20SKU%20map.%20Use%20Ctrl%2BF%20when%20editing.%20Useful%20search%20terms%20are%20DEFAULT_STATE%2C%20parseRawData%2C%20appendBatch%2C%20searchPallet%2C%20renderResults%2C%20renderRowTable%2C%20startScanWorkflow%2C%20handleSkuScan%2C%20addWrongScan%2C%20renderCompletedHistory%20and%20bindEvents.%0A%0A%23%23%203.%20State%20and%20settings%0ASearch%20for%20STORAGE_KEY%2C%20DEFAULT_MAPPING%20and%20DEFAULT_STATE.%20STORAGE_KEY%20controls%20browser%20localStorage.%20DEFAULT_MAPPING%20defines%20default%20source%20columns%3A%20qty%2C%20sku%2C%20pallet%20and%20container.%20These%20are%201-based%20column%20numbers.%20DEFAULT_STATE%20defines%20loaded%20rows%2C%20batch%20count%2C%20wrong%20scans%2C%20completed%20history%2C%20scan%20mode%2C%20manual%20modes%2C%20sounds%2C%20EAN%20map%20and%20last%20import%20date.%0A%0A%23%23%204.%20Data%20import%0ASearch%20for%20parseRawData%28rawText%29%2C%20appendBatch%28rows%2C%20sourceLabel%29%20and%20buildRowKey%28row%29.%20parseRawData%20converts%20pasted%20tab-separated%20system%20data%20into%20rows%20with%20sku%2C%20qty%2C%20palletId%20and%20containerId.%20appendBatch%20adds%20unique%20rows%20into%20state.rows%2C%20increases%20batchCount%2C%20stores%20lastImportDate%20and%20saves%20to%20localStorage.%20buildRowKey%20controls%20duplicate%20detection.%0A%0A%23%23%205.%20Pallet%20search%0ASearch%20for%20searchPallet%28%29.%20This%20function%20reads%20the%20Pallet%20ID%20input%2C%20checks%20if%20data%20exists%2C%20handles%20unfinished%20pallets%2C%20supports%20suffix%20search%20like%20%2A1234%2C%20searches%20Pallet%20ID%2C%20checks%20Container%20ID%20matches%2C%20renders%20results%20and%20handles%20no-result%20cases.%20The%20daily%20import%20warning%20uses%20todayKey%28%29%20and%20hasImportedToday%28%29.%0A%0A%23%23%206.%20Results%20table%0ASearch%20for%20renderResults%28%29%2C%20renderCurrentMeta%28%29%20and%20renderRowTable%28%29.%20renderResults%20controls%20the%20result%20area.%20renderCurrentMeta%20calculates%20record%20count%2C%20total%20quantity%20and%20container%20count.%20renderRowTable%20builds%20rows%20for%20SKU%2C%20EAN%2C%20quantity%2C%20Pallet%20ID%20and%20Container%20ID.%20If%20columns%20change%2C%20update%20both%20the%20table%20header%20and%20renderRowTable.%20Also%20check%20CSS%20nth-child%20selectors.%0A%0A%23%23%207.%20Scanning%20workflow%0ASearch%20for%20startScanWorkflow%28%29%2C%20handleSkuScan%28%29%2C%20updateScanStatus%28%29%2C%20evaluatePalletStatus%28%29%2C%20sumRequirementCounts%28%29%20and%20sumScannedCounts%28%29.%20startScanWorkflow%20creates%20scan%20requirements%20for%20the%20active%20pallet.%20handleSkuScan%20resolves%20EAN%20to%20SKU%2C%20checks%20whether%20it%20belongs%20to%20the%20active%20pallet%2C%20updates%20counts%2C%20plays%20sound%20and%20refreshes%20progress.%0A%0A%23%23%208.%20Completion%20modes%0AThe%20tool%20supports%20Complete%20by%20SKU%20and%20Complete%20by%20Quantity.%20In%20SKU%20mode%2C%20each%20unique%20SKU%20is%20required%20once.%20In%20Quantity%20mode%2C%20the%20required%20scan%20count%20follows%20quantity.%20To%20add%20a%20new%20mode%2C%20update%20the%20select%20in%20Advanced%20Tools%2C%20DEFAULT_STATE%2C%20startScanWorkflow%2C%20updateScanInstructionAndProgress%20and%20evaluatePalletStatus.%0A%0A%23%23%209.%20EAN%20to%20SKU%0ASearch%20for%20rebuildEanMaps%28%29%2C%20resolveSkuOrEan%28%29%2C%20stripEanPrefix%28%29%2C%20parseEanCsv%28%29%20and%20reloadEanDatabase%28%29.%20The%20built-in%20map%20is%20window.EAN_SKU_MAP.%20Custom%20EAN%20CSV%20can%20be%20stored%20in%20state.customEanMap.%20resolveSkuOrEan%20tries%20full%20EAN%2C%20shortened%20EAN%20and%20raw%20SKU.%0A%0A%23%23%2010.%20Wrong%20Scan%20Log%0ASearch%20for%20addWrongScan%28%29%2C%20renderWrongScanLog%28%29%20and%20renderWrongScanSummary%28%29.%20Wrong%20scans%20are%20stored%20in%20state.wrongScans%20and%20limited%20with%20slice%280%2C%20100%29.%20Pagination%20uses%20ACTIVITY_PAGE_SIZE.%0A%0A%23%23%2011.%20Completed%20Pallets%20History%0ASearch%20for%20logCompletedPallet%28%29%2C%20renderCompletedHistory%28%29%20and%20exportCompletedHistoryCsv%28%29.%20Completed%20pallets%20are%20stored%20in%20state.completedHistory%20and%20limited%20with%20slice%280%2C%20100%29.%20The%20history%20view%20is%20paginated%20using%20ACTIVITY_PAGE_SIZE.%0A%0A%23%23%2012.%20UI%20and%20CSS%0AThe%20CSS%20is%20in%20the%20style%20block.%20Important%20selectors%3A%20side-tab-panel%20for%20top%20tabs%2C%20doc-download-card%20for%20the%20documentation%20card%2C%20search-card%20for%20the%20main%20area%2C%20scan-panel%20for%20SKU%20scanning%2C%20table-wrap%20for%20the%20result%20table%2C%20meta-grid%20and%20meta-card%20for%20right-side%20statistics%2C%20stacked-panels%20for%20lower%20utility%20buttons%2C%20workflow-modal%20for%20completion%20popup%20and%20activity-pagination%20for%20log%20pagination.%0A%0A%23%23%2013.%20Messages%20and%20warnings%0ASearch%20for%20setStatus%28%29%2C%20showWorkflowModal%28%29%2C%20ensureScannerAcknowledgement%28%29%20and%20updateDuplicateWarning%28%29.%20Common%20text%20searches%3A%20Pallet%20completed%20correctly%2C%20Before%20moving%20on%2C%20No%20results%20found%20for%20pallet%20ID%20and%20Today%27s%20data%20not%20imported.%0A%0A%23%23%2014.%20Sounds%20and%20focus%0ASearch%20for%20beep%28type%29%2C%20getActiveInput%28%29%2C%20queueFocusActiveInput%28%29%20and%20queueFocusSkuInput%28%29.%20The%20tool%20keeps%20scanner%20focus%20on%20the%20operational%20input.%20Manual%20modes%20reduce%20automatic%20focus%20behavior%20to%20allow%20typing%20and%20clicking.%0A%0A%23%23%2015.%20Exports%0ASearch%20for%20exportCsv%28%29%2C%20exportCurrentView%28%29%20and%20exportCompletedHistoryCsv%28%29.%20exportCsv%20is%20the%20base%20function.%20Add%20new%20exports%20by%20preparing%20rows%20and%20headers%2C%20then%20calling%20exportCsv.%0A%0A%23%23%2016.%20Technical%20documentation%20download%0AThis%20file%20is%20downloaded%20from%20a%20data%20URL%20embedded%20in%20the%20HTML.%20Do%20not%20replace%20it%20with%20a%20link%20to%20an%20external%20file%20if%20the%20tool%20must%20remain%20shareable%20as%20one%20standalone%20HTML%20file.%0A%0A%23%23%2017.%20Minimum%20test%20after%20changes%0ARefresh%20with%20Ctrl%2BF5.%20Clear%20All.%20Import%20a%20small%20batch.%20Search%20an%20existing%20pallet.%20Scan%20a%20valid%20SKU%20or%20EAN.%20Scan%20an%20invalid%20SKU%20or%20EAN.%20Check%20Wrong%20Scan%20Log.%20Complete%20the%20pallet.%20Check%20Completed%20Pallets%20History.%20Refresh%20again%20and%20confirm%20data%20is%20restored%20from%20localStorage.%20Share%20only%20the%20HTML%20and%20confirm%20this%20documentation%20download%20still%20works.%0A%0A%23%23%2018.%20Mental%20model%0AImport%20data%20-%3E%20state.rows.%20Search%20pallet%20-%3E%20currentView.rows.%20Start%20scan%20-%3E%20scanState.requirements.%20Scan%20SKU%20or%20EAN%20-%3E%20scanState.scannedCounts.%20Update%20status%20-%3E%20table%20highlight%20and%20progress.%20Complete%20pallet%20-%3E%20completedHistory.%20Wrong%20scan%20-%3E%20wrongScans.%20Save%20-%3E%20localStorage.%0A" download="Pallet_Check_Tool_Technical_Documentation.md">Download technical documentation</a>
             </div>
           </div>
@@ -4017,6 +4017,166 @@
       link.setAttribute("href", "#");
       link.removeAttribute("download");
       link.textContent = "Download PDF";
+      link.onclick = downloadTechnicalPdf;
+    }
+
+    /* Final documentation view: no automatic print, expanded maintenance guide */
+    function technicalDocSections() {
+      return [
+        { type: "title", text: "Pallet Check Tool" },
+        { type: "subtitle", text: "Technical Documentation and Maintenance Guide" },
+        { type: "meta", text: "Scope: standalone Pallet_Check_Tool.html file. Audience: maintainers, process owners and technically capable users responsible for controlled changes." },
+
+        { type: "page" },
+        { type: "h1", text: "1. Purpose and operating context" },
+        { type: "p", text: "Pallet Check Tool is a standalone browser-based application used to verify pallet contents against exported system data. The tool is intentionally distributed as a single HTML file. It does not require a server, a database, an installation package or network access after the file has been opened. The operator imports the current batch, searches or scans a pallet, and then confirms the physical content by scanning SKU or EAN codes." },
+        { type: "p", text: "The application is designed for an operational warehouse process, not for software development experimentation. Changes should therefore be controlled, tested on a copy of the file and released only after basic process scenarios have been checked. The most common changes are column mapping updates, wording changes, visual adjustments, EAN mapping updates and changes to scan completion rules." },
+        { type: "p", text: "The tool keeps imported data and work history in the browser localStorage. This makes the file easy to share but also means that each user and browser has its own local working state. There is no central database and no cross-user synchronization." },
+
+        { type: "h1", text: "2. Single-file architecture" },
+        { type: "p", text: "The entire application lives in Pallet_Check_Tool.html. The file contains HTML markup for screens and panels, CSS for layout and appearance, JavaScript for application logic, and the embedded EAN to SKU mapping. This architecture makes the file portable, but it also means that a small JavaScript syntax error can stop the whole tool from loading." },
+        { type: "p", text: "The HTML layer defines the visible interface: top tabs, import panel, settings panel, instructions panel, pallet input, SKU input, result table, side statistics, bottom utility panels and workflow popups. The CSS layer controls the visual structure, including the dark top panels, table styling, sticky elements, hover states and print documentation view. The JavaScript layer controls state, import, search, scanning, history, logging and downloads." },
+        { type: "code", text: "Recommended navigation searches:\nDEFAULT_STATE\nparseRawData\nappendBatch\nsearchPallet\nrenderResults\nrenderRowTable\nstartScanWorkflow\nhandleSkuScan\nresolveSkuOrEan\naddWrongScan\nlogCompletedPallet\nconfigureTechnicalPdfDownload" },
+
+        { type: "page" },
+        { type: "h1", text: "3. State model and persistence" },
+        { type: "p", text: "The runtime state is stored in a single state object. The default shape is defined in DEFAULT_STATE. Important fields include rows, batchCount, mapping, completedHistory, palletActivity, wrongScans, scanMode, manualScanEntry, manualPalletEntry, scanLock, soundEnabled, customEanMap and lastImportDate." },
+        { type: "p", text: "rows contains imported operational records. batchCount counts accepted batch imports. mapping stores column positions used by the parser. completedHistory stores previously completed pallets. wrongScans stores exceptions, unknown scans and wrong pallet scans. scanMode controls whether completion is based on unique SKU confirmation or full quantity confirmation. lastImportDate is used to warn users when they search a pallet without importing data on the current day." },
+        { type: "p", text: "currentView describes what is currently displayed. scanState describes the active verification workflow. scanState.requirements contains required SKU quantities for the current pallet. scanState.scannedCounts contains what has already been scanned. scanState.lastScannedSku is used by the table to highlight the most recent row." },
+        { type: "p", text: "Persistence is handled by saveState() and loadState(). Data is written to localStorage under STORAGE_KEY. Changing STORAGE_KEY is equivalent to creating a new local data store. This can be useful after a breaking data model change, but it also means users will not automatically see previously saved local history." },
+
+        { type: "h1", text: "4. Import pipeline" },
+        { type: "p", text: "The import process starts when the user pastes exported system data into the import area and confirms the batch. The parser expects tab-separated data copied from a system export or spreadsheet. Column positions are read from state.mapping. Those positions are user-facing one-based numbers and are converted into JavaScript indexes by getColumnIndexes()." },
+        { type: "p", text: "parseRawData(rawText) is responsible for converting raw pasted text into normalized rows. Each accepted row contains sku, qty, palletId and containerId. Rows without a Pallet ID are skipped. Header-like or pallet-label rows are also filtered out. If the source export format changes from tab-separated data to another structure, this is the function that should be reviewed first." },
+        { type: "p", text: "appendBatch(rows, sourceLabel) validates parsed rows and appends only unique records to state.rows. It also increases batchCount, updates lastImportDate, saves state and refreshes status indicators. Duplicate detection is controlled by buildRowKey(row). The current rule uses SKU, quantity, Pallet ID and Container ID. If the business definition of duplicate records changes, adjust buildRowKey instead of adding conditional logic elsewhere." },
+        { type: "code", text: "Main import functions:\nparseRawData(rawText)\ngetColumnIndexes()\nappendBatch(rows, sourceLabel)\nbuildRowKey(row)\nupdateImportStatus()\nsaveState()" },
+
+        { type: "page" },
+        { type: "h1", text: "5. Pallet lookup workflow" },
+        { type: "p", text: "searchPallet() is the main lookup function. It reads the Pallet ID input, normalizes the value, checks whether data is available, prevents accidental switching away from an unfinished pallet and then searches the loaded data. It supports exact Pallet ID lookup, suffix lookup such as *1234 and Container ID lookup." },
+        { type: "p", text: "If one pallet match is found, the tool starts the scan workflow directly. If multiple matches are possible, the tool can render a selection step. If the scanned value matches a Container ID rather than a Pallet ID, the tool uses a warning path so the operator understands that the wrong label type may have been scanned." },
+        { type: "p", text: "The no-result path is intentionally split. If no result is found and the user has not imported data today, the tool shows a daily import warning instead of logging the value as a wrong scan. This protects operators from being blamed for stale local data. If today's import exists and the pallet is still not found, the scan can be logged as unknown." },
+        { type: "code", text: "Important lookup functions:\nsearchPallet()\nhasImportedToday()\ntodayKey()\nrenderResults(rows, palletId, options)\naddWrongScan(type, value, details)" },
+
+        { type: "h1", text: "6. Results rendering and table layout" },
+        { type: "p", text: "renderResults(rows, palletId, options) controls the visible result area after pallet lookup. It handles both normal result rendering and empty-state rendering. renderCurrentMeta(rows, palletId, labelText) calculates status values shown in the side statistics area. renderRowTable(rows) builds the actual SKU table." },
+        { type: "p", text: "The result table is still structurally a table, but the visual style is intentionally lighter than a spreadsheet. Strong grid lines have been reduced. Pallet ID and Container ID columns are narrowed and centered through nth-child CSS selectors. If a future maintainer changes the column order, those selectors must be updated." },
+        { type: "p", text: "Row highlighting is driven by scanState. Rows can be in progress, done or latest scanned. The proportional progress fill uses the CSS variable --scan-fill. This is especially important in Complete by Quantity mode, where the same SKU may require multiple confirmations." },
+
+        { type: "page" },
+        { type: "h1", text: "7. Scan workflow" },
+        { type: "p", text: "startScanWorkflow(rows, palletId) prepares verification for the active pallet. It creates the requirements map, resets scanned counts, stores the current pallet ID and makes the SKU/EAN scanning panel active. This function should be reviewed whenever completion rules change." },
+        { type: "p", text: "handleSkuScan() processes each SKU or EAN scan. It normalizes the scanned value, resolves EAN to SKU, checks whether the resolved SKU belongs to the active pallet and then decides whether the scan is valid, duplicate, complete or wrong. Valid scans update scannedCounts and refresh progress. Invalid scans are logged through wrong scan logic." },
+        { type: "p", text: "updateScanStatus(), evaluatePalletStatus(), sumRequirementCounts() and sumScannedCounts() work together to determine whether the pallet is still in progress or complete. When all requirements are met, logCompletedPallet() records the completed pallet and the completion modal is shown." },
+        { type: "code", text: "Core scan functions:\nstartScanWorkflow(rows, palletId)\nhandleSkuScan()\nupdateScanStatus()\nevaluatePalletStatus()\nsumRequirementCounts()\nsumScannedCounts()\nlogCompletedPallet()" },
+
+        { type: "h1", text: "8. Completion modes" },
+        { type: "p", text: "The tool currently supports two completion modes. Complete by SKU requires each unique SKU on the pallet to be confirmed once. Complete by Quantity requires the operator to scan or confirm the number of pieces represented by imported quantity." },
+        { type: "p", text: "The mode is stored in state.scanMode. It affects startScanWorkflow(), progress wording, row progress calculation and completion evaluation. Adding a third mode should not be done only in the UI. It requires changes in the data model, scan requirements, status calculation, display wording and test cases." },
+
+        { type: "page" },
+        { type: "h1", text: "9. EAN to SKU resolution" },
+        { type: "p", text: "The tool can accept either SKU or EAN as the scanned value. resolveSkuOrEan(value) is the central function for that decision. It checks the active lookup maps and returns a resolved SKU when possible. If no mapping is found, the raw value can still be treated as a direct SKU." },
+        { type: "p", text: "rebuildEanMaps() prepares lookup maps from the embedded database and optional custom EAN map. stripEanPrefix() supports the operational convention where some EAN values may be scanned with a leading prefix that should not be part of the SKU lookup. If scanners, labels or supplier data change, review this logic before changing scan validation." },
+        { type: "p", text: "Custom EAN mapping is stored in state.customEanMap. This makes the tool flexible but local. If a user loads a custom EAN CSV in one browser, another user will not automatically receive it unless they import the same file or receive an updated HTML version." },
+
+        { type: "h1", text: "10. Wrong scans and operational history" },
+        { type: "p", text: "Wrong scan handling exists to preserve operational traceability. addWrongScan(type, value, details) records exceptions such as unknown codes, codes belonging to another pallet, container scans or duplicate completion attempts depending on the scenario. The log is shown in Wrong Scan Log and paginated for readability." },
+        { type: "p", text: "Completed pallet history is recorded by logCompletedPallet(). The history includes pallet ID, timestamp, mode and completion progress. The visible list is paginated, and the stored list is capped with slice(0, 100). Increase this cap only after considering localStorage size and usability." },
+        { type: "code", text: "History and log functions:\naddWrongScan(type, value, details)\nrenderWrongScanLog()\nrenderWrongScanSummary()\nlogCompletedPallet()\nrenderCompletedHistory()\nexportCompletedHistoryCsv()" },
+
+        { type: "page" },
+        { type: "h1", text: "11. User interface structure" },
+        { type: "p", text: "The interface is divided into top navigation, main work area and lower utility panels. The top-left navigation contains Data Import, Settings and Instructions. These panels are fixed near the top of the viewport and open without moving the main content. The main work area contains pallet search, scan workflow, results table and side statistics." },
+        { type: "p", text: "The Instructions panel should remain concise for operators. Developer documentation is intentionally separated into a downloadable or printable reference so that the normal instruction flow is not overloaded. Styling for the documentation card is intentionally understated and should not look like a marketing callout." },
+        { type: "p", text: "Important CSS areas include side-tab-panel for top navigation, tab-btn for top buttons, search-card for the main working surface, table-wrap for the result table, meta-grid and meta-card for side statistics, stacked-panels for lower tools, and doc-download-card for the developer documentation block." },
+
+        { type: "h1", text: "12. Messages, warnings and sound" },
+        { type: "p", text: "setStatus(message, tone) controls inline status feedback. Tone values should remain operational and consistent: success for accepted work, warn for recoverable issues, error for blocked or incorrect actions and info for neutral feedback. Do not use overly casual wording in process-critical messages." },
+        { type: "p", text: "showWorkflowModal() controls larger modal feedback, especially after pallet completion. The completion warning exists to remind the operator to physically check whether any unscanned SKU remains on the pallet. beep(type) controls sound feedback for success, error and completion." },
+
+        { type: "page" },
+        { type: "h1", text: "13. Focus and scanner behavior" },
+        { type: "p", text: "Scanner-based workflows depend on reliable focus. getActiveInput(), queueFocusActiveInput() and queueFocusSkuInput() keep the correct field active after scans, modal actions and workflow transitions. This reduces mouse use on the shop floor and makes barcode scanners behave like direct input devices." },
+        { type: "p", text: "Manual pallet entry and manual SKU entry deliberately reduce automatic behavior. This lets users type values, correct entries and click other controls without the tool immediately stealing focus back. When changing focus logic, test both scanner mode and manual entry mode." },
+
+        { type: "h1", text: "14. Exports and maintenance outputs" },
+        { type: "p", text: "exportCsv(filename, rows, headers) is the base export function. exportCurrentView() exports the currently displayed pallet data. exportCompletedHistoryCsv() exports completed pallet history. New exports should reuse exportCsv rather than implementing separate download logic." },
+        { type: "p", text: "The technical documentation is generated from embedded content in the HTML. The current implementation opens a printable documentation view instead of generating raw PDF bytes. This is more reliable across PDF viewers and avoids blank PDF output caused by low-level PDF encoding issues." },
+
+        { type: "page" },
+        { type: "h1", text: "15. Safe change workflow" },
+        { type: "p", text: "Always work on a copy of the HTML file or through a controlled repository change. Avoid changing multiple unrelated areas at once. A visual adjustment should not be bundled with an import rule change. A wording change should not be bundled with scan completion logic. Small isolated changes are easier to test and revert." },
+        { type: "p", text: "After every functional change, refresh with Ctrl+F5, clear local data, import a small known batch, search an existing pallet, scan a valid SKU or EAN, scan an invalid value, check Wrong Scan Log, complete a pallet, check Completed Pallets History and refresh again to verify localStorage restoration." },
+        { type: "p", text: "After every documentation or distribution change, copy only the HTML file to another folder or machine and confirm that the tool opens, the documentation view opens, and no external file is required. This validates the standalone distribution requirement." },
+
+        { type: "h1", text: "16. Common change recipes" },
+        { type: "p", text: "To change default import columns, update DEFAULT_MAPPING or use Settings. To change the parser, edit parseRawData(). To change duplicate detection, edit buildRowKey(). To change pallet lookup, edit searchPallet(). To change SKU or EAN acceptance, edit resolveSkuOrEan() and handleSkuScan(). To change completion rules, edit startScanWorkflow() and evaluatePalletStatus()." },
+        { type: "p", text: "To change top tabs, edit side-tab-panel and tab-btn CSS. To change result table layout, update table header, renderRowTable() and nth-child selectors. To change right-side statistics, edit meta-grid and meta-card. To change lower logs, edit renderWrongScanLog(), renderCompletedHistory() and ACTIVITY_PAGE_SIZE." },
+
+        { type: "page" },
+        { type: "h1", text: "17. Risks and troubleshooting" },
+        { type: "p", text: "A syntax error in the script can prevent the whole application from starting. If the page appears blank or controls do not respond, open browser developer tools and check the Console tab. A missing element ID can cause event binding failures. A changed table column order can break layout selectors. A changed STORAGE_KEY can make previous local data appear missing." },
+        { type: "p", text: "If imports show zero rows, check mapping values and source separator. If a valid EAN is rejected, check EAN mapping and stripEanPrefix(). If a pallet is not found, confirm today's batch was imported and that the searched value is a Pallet ID rather than Container ID. If documentation does not open, check pop-up blocking in the browser." },
+
+        { type: "h1", text: "18. Mental model" },
+        { type: "p", text: "The most useful mental model is: Import data to state.rows. Search pallet to populate currentView.rows. Start scan to build scanState.requirements. Scan SKU or EAN to update scanState.scannedCounts. Render table and progress from scanState. Complete pallet to write completedHistory. Record exceptions in wrongScans. Persist everything through localStorage." },
+        { type: "p", text: "Most safe changes respect this flow. Most risky changes skip it, duplicate logic in multiple places or update the UI without updating the underlying state. Keep the flow simple and changes will remain predictable." }
+      ];
+    }
+
+    function buildTechnicalDocumentationPrintHtml() {
+      const sections = technicalDocSections();
+      const rows = sections.map((item) => {
+        if (item.type === "page") return '<div class="page-break"></div>';
+        if (item.type === "title") return '<h1 class="doc-title">' + escapeHtml(item.text) + '</h1>';
+        if (item.type === "subtitle") return '<div class="subtitle">' + escapeHtml(item.text) + '</div>';
+        if (item.type === "meta") return '<div class="meta">' + escapeHtml(item.text) + '</div>';
+        if (item.type === "h1") return '<h2>' + escapeHtml(item.text) + '</h2>';
+        if (item.type === "code") return '<pre>' + escapeHtml(item.text) + '</pre>';
+        return '<p>' + escapeHtml(item.text) + '</p>';
+      }).join("");
+
+      return '<!doctype html><html><head><meta charset="utf-8"><title>Pallet Check Tool - Technical Documentation</title>' +
+        '<style>' +
+        '@page{size:A4;margin:18mm 18mm 16mm 18mm;}' +
+        'body{font-family:Arial,Helvetica,sans-serif;color:#162435;background:#f6f8fb;line-height:1.48;font-size:10.5pt;margin:0;}' +
+        '.toolbar{position:sticky;top:0;background:#0f2138;color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 8px 20px rgba(8,20,34,.16);}' +
+        '.toolbar span{font-weight:700;font-size:13px;}.toolbar button{border:1px solid rgba(255,255,255,.24);background:#0b5cab;color:#fff;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;}' +
+        '.page{max-width:790px;margin:28px auto 42px;background:#fff;padding:42px 48px;box-shadow:0 16px 42px rgba(8,20,34,.10);}' +
+        '.eyebrow{font-size:8.5pt;letter-spacing:.08em;text-transform:uppercase;color:#5d7084;margin-bottom:8px;}' +
+        '.doc-title{font-size:28pt;line-height:1.08;margin:0 0 8px;color:#0b3157;}' +
+        '.subtitle{font-size:14pt;color:#0b5cab;font-weight:700;margin:0 0 10px;}' +
+        '.meta{font-size:9.5pt;color:#5d7084;border-top:1px solid #d8e1ea;border-bottom:1px solid #d8e1ea;padding:12px 0;margin:18px 0 24px;}' +
+        'h2{font-size:15pt;line-height:1.25;color:#0b5cab;margin:20px 0 7px;page-break-after:avoid;}' +
+        'p{margin:0 0 9px;}pre{font-family:Consolas,Monaco,monospace;font-size:8.5pt;line-height:1.35;background:#f0f4f8;border:1px solid #d8e1ea;border-radius:8px;padding:10px 12px;white-space:pre-wrap;}' +
+        '.page-break{break-before:page;page-break-before:always;height:1px;}' +
+        '.footer{margin-top:28px;padding-top:10px;border-top:1px solid #d8e1ea;color:#6b7c8e;font-size:8.5pt;}' +
+        '@media print{body{background:#fff;font-size:10pt;}.toolbar{display:none!important;}.page{box-shadow:none;margin:0;max-width:none;padding:0;}.page-break{break-before:page;page-break-before:always;}h2{break-after:avoid;page-break-after:avoid;}pre{break-inside:avoid;page-break-inside:avoid;}}' +
+        '</style></head><body><div class="toolbar"><span>Pallet Check Tool - Technical Documentation</span><button onclick="window.print()">Print / Save as PDF</button></div>' +
+        '<main class="page"><div class="eyebrow">Standalone HTML maintenance guide</div>' + rows +
+        '<div class="footer">Generated from Pallet_Check_Tool.html. This documentation is embedded in the standalone tool file.</div></main>' +
+        '</body></html>';
+    }
+
+    function downloadTechnicalPdf(event) {
+      if (event) event.preventDefault();
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        alert("Please allow pop-ups for this page to open the documentation view.");
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(buildTechnicalDocumentationPrintHtml());
+      printWindow.document.close();
+    }
+
+    function configureTechnicalPdfDownload() {
+      const link = document.querySelector(".doc-download-card .doc-download-link");
+      if (!link) return;
+      link.setAttribute("href", "#");
+      link.removeAttribute("download");
+      link.textContent = "Open documentation";
       link.onclick = downloadTechnicalPdf;
     }
 
