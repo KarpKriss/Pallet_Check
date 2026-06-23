@@ -3054,6 +3054,69 @@
         padding: 18px !important;
       }
     }
+
+    /* Larger top-left tabs with tool-accent hover animation */
+    .side-tab-panel .tabs,
+    body:not(.pallet-view-active) .side-tab-panel .tabs {
+      gap: 10px !important;
+    }
+
+    .side-tab-panel .tab-btn,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn {
+      min-width: 138px !important;
+      min-height: 46px !important;
+      height: 46px !important;
+      padding: 0 20px !important;
+      border-radius: 999px !important;
+      border: 1px solid rgba(11, 92, 171, 0.22) !important;
+      background: linear-gradient(180deg, #f4f9ff 0%, #e8f3ff 100%) !important;
+      color: #0b5cab !important;
+      font-size: 13.5px !important;
+      font-weight: 820 !important;
+      box-shadow: 0 12px 30px rgba(11, 92, 171, 0.12) !important;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease !important;
+      will-change: transform;
+    }
+
+    .side-tab-panel .tab-btn.active,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active {
+      background: linear-gradient(135deg, #0b5cab 0%, #1478c8 100%) !important;
+      color: #ffffff !important;
+      border-color: rgba(11, 92, 171, 0.95) !important;
+      box-shadow: 0 16px 36px rgba(11, 92, 171, 0.28) !important;
+    }
+
+    .side-tab-panel .tab-btn:not(.active):hover,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn:not(.active):hover {
+      background: linear-gradient(135deg, #eaf5ff 0%, #d7ebff 100%) !important;
+      color: #084b8d !important;
+      border-color: rgba(11, 92, 171, 0.42) !important;
+      transform: translateY(-2px) scale(1.025) !important;
+      box-shadow: 0 18px 42px rgba(11, 92, 171, 0.20) !important;
+    }
+
+    .side-tab-panel .tab-btn.active:hover,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn.active:hover {
+      transform: translateY(-2px) scale(1.025) !important;
+      box-shadow: 0 20px 46px rgba(11, 92, 171, 0.34) !important;
+    }
+
+    .side-tab-panel .tab-btn:active,
+    body:not(.pallet-view-active) .side-tab-panel .tab-btn:active {
+      transform: translateY(0) scale(0.99) !important;
+      transition-duration: 0.08s !important;
+    }
+
+    @media (max-width: 760px) {
+      .side-tab-panel .tab-btn,
+      body:not(.pallet-view-active) .side-tab-panel .tab-btn {
+        min-width: 0 !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        padding: 0 12px !important;
+        font-size: 12px !important;
+      }
+    }
   </style>
 </head>
 <body>
