@@ -3202,7 +3202,8 @@
       manualPalletEntry: false,
       scanLock: true,
       soundEnabled: true,
-      customEanMap: null
+      customEanMap: null,
+      lastImportDate: ""
     };
     const BUILTIN_EAN_MAP = window.EAN_SKU_MAP || {};
 
@@ -3354,6 +3355,18 @@
         minute: "2-digit",
         second: "2-digit"
       });
+    }
+
+    function todayKey() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return year + "-" + month + "-" + day;
+    }
+
+    function hasImportedToday() {
+      return state.lastImportDate === todayKey();
     }
 
     function getActiveRawEanMap() {
@@ -3635,6 +3648,7 @@
 
       state.rows.push(...uniqueRows);
       state.batchCount += 1;
+      state.lastImportDate = todayKey();
       saveState();
       updateStats();
 
@@ -4637,6 +4651,17 @@
       const containerRows = state.rows.filter((row) => row.containerId === query);
       if (containerRows.length > 0) {
         renderContainerMatches(containerRows, query);
+        return;
+      }
+
+      if (!hasImportedToday()) {
+        renderResults([], query, {
+          emptyTitle: "Today's data not imported",
+          emptyMeta: 'No results found for pallet ID: "' + query + '".',
+          emptyBody: "It looks like you have not imported today's data yet. Import a new batch first to get more pallet results."
+        });
+        setStatus("It looks like you have not imported today's data yet. Import a new batch first to get more results.", "warn");
+        queueFocusActiveInput();
         return;
       }
 
